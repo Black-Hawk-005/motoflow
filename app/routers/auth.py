@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app import models
 from app.auth import create_access_token, hash_password, verify_password
 from app.database import get_db
+from app.dependencies import get_current_user
 from app.schemas import UserCreate, UserRead, UserRole
 
 router = APIRouter()
@@ -88,3 +89,8 @@ async def login(
         }
     )
     return {"access_token": token, "token_type": "bearer"}
+
+
+@router.get("/me")
+def get_me(current_user: Annotated[models.Users, Depends(get_current_user)]):
+    return current_user

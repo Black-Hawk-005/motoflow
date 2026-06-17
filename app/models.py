@@ -24,7 +24,7 @@ class Users(Base):
     )
     full_name: Mapped[str] = mapped_column(String(100))
     email: Mapped[str] = mapped_column(String(120), unique=True)
-    phone_number: Mapped[str] = mapped_column(String(15), unique=True)
+    phone: Mapped[str] = mapped_column(String(15), unique=True)
     password_hash: Mapped[str] = mapped_column(String(128))
 
 

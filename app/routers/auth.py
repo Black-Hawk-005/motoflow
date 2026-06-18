@@ -46,7 +46,7 @@ async def register(
             )
 
     new_user = models.Users(
-        role=user_details.role,
+        role=UserRole.CUSTOMER,
         full_name=user_details.full_name,
         email=user_details.email,
         phone=user_details.phone,

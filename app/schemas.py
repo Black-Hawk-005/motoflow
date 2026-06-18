@@ -23,12 +23,19 @@ class ServiceStatus(str, Enum):
     CLOSED = "closed"
 
 
-class UserCreate(BaseModel):
+class AdminUserCreate(BaseModel):
     full_name: str = Field(min_length=3, max_length=100)
     email: EmailStr
     password: str = Field(min_length=8, max_length=128)
     phone: str = Field(pattern=r"^\+?[1-9]\d{9,14}$")
     role: UserRole
+
+
+class UserCreate(BaseModel):
+    full_name: str = Field(min_length=3, max_length=100)
+    email: EmailStr
+    password: str = Field(min_length=8, max_length=128)
+    phone: str = Field(pattern=r"^\+?[1-9]\d{9,14}$")
 
 
 class UserRead(BaseModel):

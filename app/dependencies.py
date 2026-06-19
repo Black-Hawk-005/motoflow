@@ -71,3 +71,14 @@ async def require_customer(current_user: models.Users = Depends(get_current_user
             detail="Customers only",
         )
     return current_user
+
+
+def require_roles(*roles: UserRole):
+    async def checker(current_user: Annotated[models.Users, Depends(get_current_user)]):
+        if current_user.role not in roles:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed"
+            )
+        return current_user
+
+    return checker

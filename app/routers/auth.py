@@ -37,12 +37,12 @@ async def register(
         if existing_user.email == user_details.email:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Email already registered",
+                detail="Details given are already registered",
             )
         if existing_user.phone == user_details.phone:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Phone number already registered",
+                detail="Details given are already registered",
             )
 
     new_user = models.Users(

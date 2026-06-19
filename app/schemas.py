@@ -49,7 +49,6 @@ class UserRead(BaseModel):
 
 
 class VehicleCreate(BaseModel):
-    customer_id: UUID
     make: str = Field(min_length=4, max_length=50)
     model: str = Field(min_length=4, max_length=50)
     year: int = Field(gt=1885)

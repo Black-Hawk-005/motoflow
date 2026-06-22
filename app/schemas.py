@@ -67,10 +67,10 @@ class VehicleRead(BaseModel):
 
 
 class VehicleUpdate(BaseModel):
-    make: Optional[str]
-    model: Optional[str]
-    year: Optional[int]
-    license_plate: Optional[str]
+    make: Optional[str] = Field(default=None, min_length=4, max_length=50)
+    model: Optional[str] = Field(default=None, min_length=4, max_length=50)
+    year: Optional[int] = Field(default=None, gt=1885)
+    license_plate: Optional[str] = Field(default=None, min_length=8)
 
 
 class ServiceRequestCreate(BaseModel):

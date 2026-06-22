@@ -66,6 +66,13 @@ class VehicleRead(BaseModel):
     license_plate: str
 
 
+class VehicleUpdate(BaseModel):
+    make: Optional[str]
+    model: Optional[str]
+    year: Optional[int]
+    license_plate: Optional[str]
+
+
 class ServiceRequestCreate(BaseModel):
     customer_id: UUID  # to be changed during jwt auth
     vehicle_id: UUID

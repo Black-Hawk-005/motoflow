@@ -74,7 +74,6 @@ class VehicleUpdate(BaseModel):
 
 
 class ServiceRequestCreate(BaseModel):
-    customer_id: UUID  # to be changed during jwt auth
     vehicle_id: UUID
     initial_complaint: str = Field(min_length=10)
 

@@ -91,6 +91,11 @@ class ServiceRequestRead(BaseModel):
     updated_at: datetime
 
 
+class ServiceRequestUpdate(BaseModel):
+    mechanic_id: Optional[UUID] = None
+    status: Optional[ServiceStatus] = None
+
+
 class ServiceLineItemCreate(BaseModel):
     service_request_id: UUID
     description: str = Field(min_length=10)

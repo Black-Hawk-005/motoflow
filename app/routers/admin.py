@@ -21,13 +21,13 @@ router = APIRouter()
 async def create_user(
     user_details: AdminUserCreate,
     db: Annotated[AsyncSession, Depends(get_db)],
-    current_user: Annotated[models.Users, Depends(require_admin)],
+    current_user: Annotated[models.User, Depends(require_admin)],
 ):
     result = await db.execute(
-        select(models.Users).where(
+        select(models.User).where(
             or_(
-                models.Users.email == user_details.email,
-                models.Users.phone == user_details.phone,
+                models.User.email == user_details.email,
+                models.User.phone == user_details.phone,
             )
         )
     )
@@ -45,7 +45,7 @@ async def create_user(
                 detail="Phone number already registered",
             )
 
-    new_user = models.Users(
+    new_user = models.User(
         role=user_details.role,
         full_name=user_details.full_name,
         email=user_details.email,

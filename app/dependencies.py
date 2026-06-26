@@ -17,7 +17,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)],
     db: Annotated[AsyncSession, Depends(get_db)],
-) -> models.Users:
+) -> models.User:
     user_id = decode_access_token(token=token)
     if not user_id:
         raise HTTPException(
@@ -35,7 +35,7 @@ async def get_current_user(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    result = await db.execute(select(models.Users).where((models.Users.id) == uid))
+    result = await db.execute(select(models.User).where((models.User.id) == uid))
     user = result.scalar_one_or_none()
     if not user:
         raise HTTPException(
@@ -46,7 +46,7 @@ async def get_current_user(
     return user
 
 
-async def require_admin(current_user: models.Users = Depends(get_current_user)):
+async def require_admin(current_user: models.User = Depends(get_current_user)):
     if current_user.role != UserRole.ADMIN:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -55,7 +55,7 @@ async def require_admin(current_user: models.Users = Depends(get_current_user)):
     return current_user
 
 
-async def require_mechanic(current_user: models.Users = Depends(get_current_user)):
+async def require_mechanic(current_user: models.User = Depends(get_current_user)):
     if current_user.role != UserRole.MECHANIC:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -64,7 +64,7 @@ async def require_mechanic(current_user: models.Users = Depends(get_current_user
     return current_user
 
 
-async def require_customer(current_user: models.Users = Depends(get_current_user)):
+async def require_customer(current_user: models.User = Depends(get_current_user)):
     if current_user.role != UserRole.CUSTOMER:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -74,7 +74,7 @@ async def require_customer(current_user: models.Users = Depends(get_current_user
 
 
 def require_roles(*roles: UserRole):
-    async def checker(current_user: Annotated[models.Users, Depends(get_current_user)]):
+    async def checker(current_user: Annotated[models.User, Depends(get_current_user)]):
         if current_user.role not in roles:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed"

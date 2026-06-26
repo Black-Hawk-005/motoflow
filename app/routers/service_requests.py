@@ -18,6 +18,16 @@ from app.schemas import (
 )
 
 router = APIRouter()
+VALID_TRANSITIONS = {
+    ServiceStatus.PENDING: {ServiceStatus.ASSIGNED},
+    ServiceStatus.ASSIGNED: {ServiceStatus.IN_PROGRESS},
+    ServiceStatus.IN_PROGRESS: {
+        ServiceStatus.ACTION_REQUIRED,
+        ServiceStatus.APPROVED,
+    },
+    ServiceStatus.APPROVED: {ServiceStatus.COMPLETED},
+    ServiceStatus.COMPLETED: {ServiceStatus.CLOSED},
+}
 
 
 @router.post(
@@ -26,7 +36,7 @@ router = APIRouter()
 async def create_service_request(
     request_details: ServiceRequestCreate,
     db: Annotated[AsyncSession, Depends(get_db)],
-    current_user: Annotated[models.Users, Depends(require_customer)],
+    current_user: Annotated[models.User, Depends(require_customer)],
 ):
     result = await db.execute(
         select(models.Vehicle).where((models.Vehicle.id) == request_details.vehicle_id)
@@ -57,7 +67,7 @@ async def create_service_request(
 @router.get("/", response_model=List[ServiceRequestRead])
 async def list_service_requests(
     db: Annotated[AsyncSession, Depends(get_db)],
-    current_user: Annotated[models.Users, Depends(get_current_user)],
+    current_user: Annotated[models.User, Depends(get_current_user)],
 ):
     if current_user.role == UserRole.CUSTOMER:
         result = await db.execute(
@@ -77,7 +87,7 @@ async def list_service_requests(
 async def get_service_request(
     request_id: UUID,
     db: Annotated[AsyncSession, Depends(get_db)],
-    current_user: Annotated[models.Users, Depends(get_current_user)],
+    current_user: Annotated[models.User, Depends(get_current_user)],
 ):
     result = await db.execute(
         select(models.ServiceRequest).where((models.ServiceRequest.id) == request_id)
@@ -109,7 +119,7 @@ async def update_request(
     update_details: ServiceRequestUpdate,
     db: Annotated[AsyncSession, Depends(get_db)],
     current_user: Annotated[
-        models.Users,
+        models.User,
         Depends(
             require_roles(
                 UserRole.MECHANIC,
@@ -128,20 +138,9 @@ async def update_request(
             detail="Request not found",
         )
 
-    VALID_TRANSITIONS = {
-        ServiceStatus.PENDING: {ServiceStatus.ASSIGNED},
-        ServiceStatus.ASSIGNED: {ServiceStatus.IN_PROGRESS},
-        ServiceStatus.IN_PROGRESS: {
-            ServiceStatus.ACTION_REQUIRED,
-            ServiceStatus.APPROVED,
-        },
-        ServiceStatus.APPROVED: {ServiceStatus.COMPLETED},
-        ServiceStatus.COMPLETED: {ServiceStatus.CLOSED},
-    }
-
     update_data = update_details.model_dump(exclude_unset=True)
     if "status" in update_data and update_data["status"] not in VALID_TRANSITIONS.get(
-        request.status
+        request.status, set()
     ):
         raise HTTPException(
             status_code=http_status.HTTP_400_BAD_REQUEST,
@@ -153,5 +152,47 @@ async def update_request(
 
     await db.commit()
     await db.refresh(request, attribute_names=["mechanic_id", "status"])
+
+    return request
+
+
+@router.patch(
+    "/{request_id}/approve",
+    response_model=ServiceRequestRead,
+)
+async def approve_request(
+    request_id: UUID,
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[
+        models.User,
+        Depends(require_customer),
+    ],
+):
+    result = await db.execute(
+        select(models.ServiceRequest).where((models.ServiceRequest.id) == request_id)
+    )
+    request = result.scalar_one_or_none()
+    if not request:
+        raise HTTPException(
+            status_code=http_status.HTTP_404_NOT_FOUND,
+            detail="Request not found",
+        )
+
+    if request.customer_id != current_user.id:
+        raise HTTPException(
+            status_code=http_status.HTTP_404_NOT_FOUND,
+            detail="Request not found",
+        )
+
+    if request.status != ServiceStatus.ACTION_REQUIRED:
+        raise HTTPException(
+            status_code=http_status.HTTP_400_BAD_REQUEST,
+            detail="Invalid status change",
+        )
+
+    request.status = ServiceStatus.APPROVED
+
+    await db.commit()
+    await db.refresh(request, attribute_names=["status"])
 
     return request

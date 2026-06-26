@@ -15,7 +15,7 @@ from app.database import Base
 from app.schemas import ServiceStatus, UserRole
 
 
-class Users(Base):
+class User(Base):
     __tablename__ = "users"
 
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)

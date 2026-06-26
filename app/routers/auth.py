@@ -24,10 +24,10 @@ async def register(
 ):
 
     result = await db.execute(
-        select(models.Users).where(
+        select(models.User).where(
             or_(
-                models.Users.email == user_details.email,
-                models.Users.phone == user_details.phone,
+                models.User.email == user_details.email,
+                models.User.phone == user_details.phone,
             )
         )
     )
@@ -45,7 +45,7 @@ async def register(
                 detail="Details given are already registered",
             )
 
-    new_user = models.Users(
+    new_user = models.User(
         role=UserRole.CUSTOMER,
         full_name=user_details.full_name,
         email=user_details.email,
@@ -66,7 +66,7 @@ async def login(
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
     result = await db.execute(
-        select(models.Users).where((models.Users.email) == request_form.username)
+        select(models.User).where((models.User.email) == request_form.username)
     )
     existing_user = result.scalar_one_or_none()
     if existing_user is None:
@@ -92,5 +92,5 @@ async def login(
 
 
 @router.get("/me")
-def get_me(current_user: Annotated[models.Users, Depends(get_current_user)]):
+def get_me(current_user: Annotated[models.User, Depends(get_current_user)]):
     return current_user

@@ -21,7 +21,7 @@ router = APIRouter()
 async def add_vehicle(
     vehicle_details: VehicleCreate,
     db: Annotated[AsyncSession, Depends(get_db)],
-    current_user: Annotated[models.Users, Depends(require_customer)],
+    current_user: Annotated[models.User, Depends(require_customer)],
 ):
     results = await db.execute(
         select(models.Vehicle).where(
@@ -54,7 +54,7 @@ async def add_vehicle(
 )
 async def list_vehicles(
     db: Annotated[AsyncSession, Depends(get_db)],
-    current_user: Annotated[models.Users, Depends(get_current_user)],
+    current_user: Annotated[models.User, Depends(get_current_user)],
 ):
     if current_user.role == UserRole.CUSTOMER:
         result = await db.execute(
@@ -74,7 +74,7 @@ async def list_vehicles(
 async def get_vehicle(
     vehicle_id: UUID,
     db: Annotated[AsyncSession, Depends(get_db)],
-    current_user: Annotated[models.Users, Depends(get_current_user)],
+    current_user: Annotated[models.User, Depends(get_current_user)],
 ):
     result = await db.execute(
         select(models.Vehicle).where((models.Vehicle.id) == vehicle_id)
@@ -98,7 +98,7 @@ async def get_vehicle(
 async def delete_vehicle(
     vehicle_id: UUID,
     db: Annotated[AsyncSession, Depends(get_db)],
-    current_user: Annotated[models.Users, Depends(get_current_user)],
+    current_user: Annotated[models.User, Depends(get_current_user)],
 ):
     result = await db.execute(
         select(models.Vehicle).where((models.Vehicle.id) == vehicle_id)
@@ -126,7 +126,7 @@ async def update_vehicle(
     vehicle_id: UUID,
     vehicle_details: VehicleUpdate,
     db: Annotated[AsyncSession, Depends(get_db)],
-    current_user: Annotated[models.Users, Depends(get_current_user)],
+    current_user: Annotated[models.User, Depends(get_current_user)],
 ):
     results = await db.execute(
         select(models.Vehicle).where((models.Vehicle.id == vehicle_id))

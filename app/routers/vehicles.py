@@ -1,4 +1,4 @@
-from typing import Annotated, List
+from typing import Annotated, List, Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import models
 from app.database import get_db
-from app.dependencies import get_current_user, require_customer
+from app.dependencies import get_current_user, require_roles
 from app.schemas import UserRead, UserRole, VehicleCreate, VehicleRead, VehicleUpdate
 
 router = APIRouter()
@@ -21,8 +21,28 @@ router = APIRouter()
 async def add_vehicle(
     vehicle_details: VehicleCreate,
     db: Annotated[AsyncSession, Depends(get_db)],
-    current_user: Annotated[models.User, Depends(require_customer)],
+    current_user: Annotated[
+        models.User, Depends(require_roles(UserRole.CUSTOMER, UserRole.ADMIN))
+    ],
+    customer_id: Optional[UUID] = None,
 ):
+    if current_user.role == UserRole.ADMIN:
+        if not customer_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="Customer-ID required"
+            )
+        results = await db.execute(
+            select(models.User).where((models.User.id) == customer_id)
+        )
+        customer = results.scalar_one_or_none()
+        if not customer or customer.role != UserRole.CUSTOMER:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Customer does not exist",
+            )
+    else:
+        customer_id = current_user.id
+
     results = await db.execute(
         select(models.Vehicle).where(
             (models.Vehicle.license_plate) == vehicle_details.license_plate
@@ -34,9 +54,8 @@ async def add_vehicle(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Vehicle already registered",
         )
-
     new_vehicle = models.Vehicle(
-        customer_id=current_user.id,
+        customer_id=customer_id,
         make=vehicle_details.make,
         model=vehicle_details.model,
         year=vehicle_details.year,

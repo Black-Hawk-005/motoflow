@@ -114,7 +114,6 @@ class ServiceLineItemRead(BaseModel):
 
 class CommentCreate(BaseModel):
     service_request_id: UUID
-    author_id: UUID
     message: str = Field(min_length=10)
 
 

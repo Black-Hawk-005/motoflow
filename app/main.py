@@ -5,7 +5,14 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app.database import engine
-from app.routers import admin, auth, service_line_items, service_requests, vehicles
+from app.routers import (
+    admin,
+    auth,
+    comments,
+    service_line_items,
+    service_requests,
+    vehicles,
+)
 
 if sys.platform == "win32":
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
@@ -27,3 +34,4 @@ app.include_router(
     service_requests.router, prefix="/service-requests", tags=["service-requests"]
 )
 app.include_router(service_line_items.router, prefix="/line-items", tags=["line-items"])
+app.include_router(comments.router, prefix="/comments", tags=["comments"])

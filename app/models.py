@@ -32,7 +32,9 @@ class Vehicle(Base):
     __tablename__ = "vehicles"
 
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
-    customer_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"))
+    customer_id: Mapped[UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), index=True
+    )
     make: Mapped[str] = mapped_column(String(50))
     model: Mapped[str] = mapped_column(String(50))
     year: Mapped[int] = mapped_column(Integer)
@@ -43,16 +45,24 @@ class ServiceRequest(Base):
     __tablename__ = "service_requests"
 
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
-    customer_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"))
-    vehicle_id: Mapped[UUID] = mapped_column(ForeignKey("vehicles.id"))
+    customer_id: Mapped[UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"),
+        index=True,
+    )
+    vehicle_id: Mapped[UUID] = mapped_column(
+        ForeignKey("vehicles.id"),
+        index=True,
+    )
     mechanic_id: Mapped[Optional[UUID]] = mapped_column(
-        ForeignKey("users.id"),
+        ForeignKey("users.id", ondelete="SET NULL"),
         nullable=True,
+        index=True,
     )
     initial_complaint: Mapped[str] = mapped_column(Text)
     status: Mapped[ServiceStatus] = mapped_column(
         SAEnum(ServiceStatus, name="servicestatus"),
         default=ServiceStatus.PENDING,
+        index=True,
     )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
@@ -70,7 +80,7 @@ class ServiceLineItem(Base):
 
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
     service_request_id: Mapped[UUID] = mapped_column(
-        ForeignKey("service_requests.id"),
+        ForeignKey("service_requests.id", ondelete="CASCADE"), index=True
     )
     description: Mapped[str] = mapped_column(
         Text,
@@ -85,8 +95,13 @@ class Comment(Base):
     __tablename__ = "comments"
 
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
-    service_request_id: Mapped[UUID] = mapped_column(ForeignKey("service_requests.id"))
-    author_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"))
+    service_request_id: Mapped[UUID] = mapped_column(
+        ForeignKey("service_requests.id", ondelete="CASCADE"),
+        index=True,
+    )
+    author_id: Mapped[UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), index=True
+    )
     message: Mapped[str] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

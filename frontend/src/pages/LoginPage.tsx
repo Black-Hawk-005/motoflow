@@ -1,19 +1,19 @@
 import { useState, type SubmitEvent } from "react";
 import { useLogin } from "../hooks/useLogin";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { mutate, isPending, isError } = useLogin();
   const navigate = useNavigate();
-
+  const [searchParams] = useSearchParams();
   const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     mutate(
       { email, password },
       {
-        onSuccess: () => navigate("/dashboard"),
+        onSuccess: () => navigate(searchParams.get("redirect") ?? "/dashboard"),
       },
     );
   };

@@ -1,7 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import { LoginPage } from "./pages/LoginPage";
 import { DashboardPage } from "./pages/DashboardPage";
-import "./App.css";
 import { PrivateRoute } from "./components/PrivateRoute";
 import { CustomerPage } from "./pages/CustomerPage";
 import { MechanicPage } from "./pages/MechanicPage";

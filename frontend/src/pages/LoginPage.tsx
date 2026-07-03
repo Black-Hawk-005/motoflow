@@ -21,12 +21,16 @@ export const LoginPage = () => {
   return (
     <>
       <form onSubmit={(e) => handleSubmit(e)}>
+        <label htmlFor="email-input">Email:</label>
         <input
+          id="email-input"
           type="email"
           onChange={(e) => setEmail(e.target.value)}
           value={email}
         ></input>
+        <label htmlFor="password-input">Password:</label>
         <input
+          id="password-input"
           type="password"
           onChange={(e) => setPassword(e.target.value)}
           value={password}

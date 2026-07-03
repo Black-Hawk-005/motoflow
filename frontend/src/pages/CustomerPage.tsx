@@ -20,7 +20,7 @@ export const CustomerPage = () => {
         onSuccess: () => {
           setMake("");
           setModel("");
-          setYear(1996);
+          setYear(1896);
           setLicensePlate("");
         },
       },
@@ -42,24 +42,28 @@ export const CustomerPage = () => {
       ))}
 
       <form onSubmit={(e) => handleSubmit(e)}>
+        <label htmlFor="make-input">Make:</label>
         <input
           id="make-input"
           type="text"
           value={make}
           onChange={(e) => setMake(e.target.value)}
         />
+        <label htmlFor="model-input">Model:</label>
         <input
           id="model-input"
           type="text"
           value={model}
           onChange={(e) => setModel(e.target.value)}
         />
+        <label htmlFor="year-input">Year:</label>
         <input
           id="year-input"
           type="number"
           value={year}
           onChange={(e) => setYear(Number(e.target.value))}
         />
+        <label htmlFor="license-plate-input">License Plate:</label>
         <input
           id="license-plate-input"
           value={license_plate}

@@ -3,7 +3,7 @@ import axiosClient from "./client";
 import type {
   ServiceRequestResponse,
   ServiceRequestCreatePayload,
-} from "../types/ServiceRequest";
+} from "../types/serviceRequest";
 
 export const listServiceRequests = async (): Promise<
   ServiceRequestResponse[]

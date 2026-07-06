@@ -9,7 +9,8 @@ export const DashboardPage = () => {
     if (!data) return;
     if (data.role === "customer") navigate("/customer");
     else if (data.role === "mechanic") navigate("/mechanic");
-    else navigate("/admin");
+    else if (data.role === "admin") navigate("/admin");
+    else navigate("/login");
   }, [data, navigate]);
   return (
     <>

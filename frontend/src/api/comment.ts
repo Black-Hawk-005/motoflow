@@ -14,8 +14,8 @@ export const create_comment = async (
 export const list_comments = async (
   service_request_id: string,
 ): Promise<CommentResponse[]> => {
-  const response = await axiosClient.get<CommentResponse[]>(
-    `/service-requests/${service_request_id}`,
-  );
+  const response = await axiosClient.get<CommentResponse[]>("/comments/", {
+    params: { service_request_id },
+  });
   return response.data;
 };

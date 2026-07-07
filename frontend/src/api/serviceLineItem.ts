@@ -18,8 +18,12 @@ export const list_line_items = async (
   service_request_id: string,
 ): Promise<ServiceLineItemResponse[]> => {
   const response = await axiosClient.get<ServiceLineItemResponse[]>(
-    `/line-items/${service_request_id}`,
+    "/line-items/",
+    {
+      params: { service_request_id },
+    },
   );
+
   return response.data;
 };
 

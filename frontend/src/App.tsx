@@ -7,6 +7,7 @@ import { CustomerPage } from "./pages/CustomerPage";
 import { MechanicPage } from "./pages/MechanicPage";
 import { AdminPage } from "./pages/AdminPage";
 import { Navigate } from "react-router-dom";
+import ServiceRequestDetail from "./pages/ServiceRequestDetail";
 
 function App() {
   return (
@@ -25,6 +26,10 @@ function App() {
           <Route element={<RoleRoute allowedRoles={["admin"]} />}>
             <Route path="/admin" element={<AdminPage />} />
           </Route>
+          <Route
+            path="/service-request/:id"
+            element={<ServiceRequestDetail />}
+          ></Route>
         </Route>
       </Routes>
     </>

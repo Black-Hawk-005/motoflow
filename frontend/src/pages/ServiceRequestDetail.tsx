@@ -5,9 +5,11 @@ import { useLineItems } from "../hooks/useLineItems";
 import { useComments } from "../hooks/useComments";
 import { useCreateComment } from "../hooks/useCreateComment";
 import { useApproveLineItem } from "../hooks/useApproveLineItem";
+import { useState } from "react";
+import type { SubmitEvent } from "react";
 
 const ServiceRequestDetail = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id: id } = useParams<{ id: string }>();
   const { data: serviceRequest, isLoading: isSRLoading } = useServiceRequest(
     id as string,
   );
@@ -26,6 +28,21 @@ const ServiceRequestDetail = () => {
     isPending: isALPending,
     isError: isALError,
   } = useApproveLineItem();
+
+  const [message, setMessage] = useState("");
+
+  const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    createComment(
+      {
+        service_request_id: id as string,
+        message,
+      },
+      {
+        onSuccess: () => setMessage(""),
+      },
+    );
+  };
 
   if (isSRLoading || isLILoading || isCLoading || isRoleLoading) {
     return <p>Loading...</p>;
@@ -53,11 +70,26 @@ const ServiceRequestDetail = () => {
                 Approve
               </button>
             )}
+            {isALError && <p>Failed to approve</p>}
           </li>
         ))}
       </ul>
 
-      <h3>Comments:</h3>
+      <h3>Messages:</h3>
+      {isCPending && <p>Loading...</p>}
+      {isCError && <p>Failed to add comment</p>}
+      <form onSubmit={(e) => handleSubmit(e)}>
+        <label htmlFor="message-input">Message: </label>
+        <input
+          id="message-input"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          type="text"
+        />
+        <button type="submit" disabled={isCPending}>
+          Send
+        </button>
+      </form>
       <ul>
         {comments?.map((comment) => (
           <li key={comment.id}>

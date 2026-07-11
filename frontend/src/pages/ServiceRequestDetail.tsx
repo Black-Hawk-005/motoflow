@@ -78,6 +78,23 @@ const ServiceRequestDetail = () => {
       <h3>Messages:</h3>
       {isCPending && <p>Loading...</p>}
       {isCError && <p>Failed to add comment</p>}
+      <ul>
+        {[...(comments ?? [])]
+          .sort(
+            (a, b) =>
+              new Date(a.created_at).getTime() -
+              new Date(b.created_at).getTime(),
+          )
+          .map((comment) => (
+            <li key={comment.id}>
+              {" "}
+              {comment.author.full_name}
+              {["mechanic", "admin"].includes(comment.author.role) &&
+                ` (${comment.author.role})`}{" "}
+              - {comment.message}{" "}
+            </li>
+          ))}
+      </ul>
       <form onSubmit={(e) => handleSubmit(e)}>
         <label htmlFor="message-input">Message: </label>
         <input
@@ -90,14 +107,6 @@ const ServiceRequestDetail = () => {
           Send
         </button>
       </form>
-      <ul>
-        {comments?.map((comment) => (
-          <li key={comment.id}>
-            {" "}
-            {comment.author_id} - {comment.message}{" "}
-          </li>
-        ))}
-      </ul>
     </>
   );
 };

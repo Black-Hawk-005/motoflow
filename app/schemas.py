@@ -117,11 +117,19 @@ class CommentCreate(BaseModel):
     message: str = Field(min_length=10)
 
 
+class CommentAuthor(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    full_name: str
+    role: UserRole
+
+
 class CommentRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: UUID
     service_request_id: UUID
-    author_id: UUID
+    author: CommentAuthor
     message: str
     created_at: datetime

@@ -1,6 +1,6 @@
 import { useVehicles } from "../../hooks/useVehicles";
 
-const VehicleList = () => {
+export const VehicleList = () => {
   const {
     data: vehicles,
     isLoading: isVLoading,
@@ -22,5 +22,3 @@ const VehicleList = () => {
     </div>
   );
 };
-
-export default VehicleList;

@@ -1,4 +1,4 @@
-import VehicleList from "../components/vehicles/VehicleList";
+import { VehicleList } from "../components/vehicles/VehicleList";
 import { CreateVehicleForm } from "../components/vehicles/CreateVehicleForm";
 import { ServiceRequestList } from "../components/service_request/ServiceRequestList";
 import { CreateSRForm } from "../components/service_request/CreateSRForm";

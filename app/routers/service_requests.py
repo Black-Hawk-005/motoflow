@@ -128,6 +128,12 @@ async def update_request(
         ),
     ],
 ):
+    update_data = update_details.model_dump(exclude_unset=True)
+    if "mechanic_id" in update_data and current_user.role == UserRole.MECHANIC:
+        raise HTTPException(
+            status_code=http_status.HTTP_403_FORBIDDEN,
+            detail="Admin only operation performed",
+        )
     result = await db.execute(
         select(models.ServiceRequest).where((models.ServiceRequest.id) == request_id)
     )
@@ -138,7 +144,6 @@ async def update_request(
             detail="Request not found",
         )
 
-    update_data = update_details.model_dump(exclude_unset=True)
     if "status" in update_data and update_data["status"] not in VALID_TRANSITIONS.get(
         request.status, set()
     ):

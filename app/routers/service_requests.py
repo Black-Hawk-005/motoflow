@@ -78,6 +78,15 @@ async def list_service_requests(
         requests = result.scalars().all()
         return requests
 
+    if current_user.role == UserRole.MECHANIC:
+        result = await db.execute(
+            select(models.ServiceRequest).where(
+                (models.ServiceRequest.mechanic_id) == current_user.id
+            )
+        )
+        requests = result.scalars().all()
+        return requests
+
     result = await db.execute(select(models.ServiceRequest))
     requests = result.scalars().all()
     return requests

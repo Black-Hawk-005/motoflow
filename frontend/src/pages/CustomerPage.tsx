@@ -1,7 +1,7 @@
-import { VehicleList } from "../components/vehicles/VehicleList";
-import { CreateVehicleForm } from "../components/vehicles/CreateVehicleForm";
-import { ServiceRequestList } from "../components/service_request/ServiceRequestList";
-import { CreateSRForm } from "../components/service_request/CreateSRForm";
+import { VehicleList } from "../components/vehicle/VehicleList";
+import { CreateVehicleForm } from "../components/vehicle/CreateVehicleForm";
+import { ServiceRequestList } from "../components/serviceRequest/ServiceRequestList";
+import { CreateSRForm } from "../components/serviceRequest/CreateServiceRequestForm";
 
 export const CustomerPage = () => {
   return (

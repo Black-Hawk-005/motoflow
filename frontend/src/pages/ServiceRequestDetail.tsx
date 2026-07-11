@@ -1,12 +1,14 @@
 import { useParams } from "react-router-dom";
+import { useState } from "react";
+import type { SubmitEvent } from "react";
+
 import { useServiceRequest } from "../hooks/useServiceRequest";
 import { useMe } from "../hooks/useMe";
 import { useLineItems } from "../hooks/useLineItems";
 import { useComments } from "../hooks/useComments";
 import { useCreateComment } from "../hooks/useCreateComment";
 import { useApproveLineItem } from "../hooks/useApproveLineItem";
-import { useState } from "react";
-import type { SubmitEvent } from "react";
+import { useApproveServiceRequest } from "../hooks/useApproveServiceRequest";
 
 const ServiceRequestDetail = () => {
   const { id: id } = useParams<{ id: string }>();
@@ -28,6 +30,11 @@ const ServiceRequestDetail = () => {
     isPending: isALPending,
     isError: isALError,
   } = useApproveLineItem();
+  const {
+    mutate: approveSR,
+    isPending: isApprovingSR,
+    isError: isApproveSRError,
+  } = useApproveServiceRequest();
 
   const [message, setMessage] = useState("");
 
@@ -53,6 +60,16 @@ const ServiceRequestDetail = () => {
       <h1>Service Request Details</h1>
 
       <h2>Status: {serviceRequest?.status}</h2>
+      {user?.role === "customer" &&
+        serviceRequest?.status === "action_required" && (
+          <button
+            disabled={isApprovingSR}
+            onClick={() => approveSR(serviceRequest.id)}
+          >
+            Approve
+          </button>
+        )}
+      {isApproveSRError && <p>Failed to approve service request</p>}
       <p>Initial Complaint</p>
       <p>{serviceRequest?.initial_complaint}</p>
       <p>Created at: {serviceRequest?.created_at}</p>

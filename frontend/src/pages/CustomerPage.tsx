@@ -1,10 +1,11 @@
+import { Link } from "react-router-dom";
+import { useState } from "react";
+import type { SubmitEvent } from "react";
+
 import { useVehicles } from "../hooks/useVehicles";
 import { useCreateVehicle } from "../hooks/useCreateVehicle";
 import { useServiceRequests } from "../hooks/useServiceRequests";
 import { useCreateServiceRequest } from "../hooks/useCreateServiceRequest";
-import { useApproveServiceRequest } from "../hooks/useApproveServiceRequest";
-import { useState } from "react";
-import type { SubmitEvent } from "react";
 
 export const CustomerPage = () => {
   // vehicle data fetch
@@ -30,8 +31,6 @@ export const CustomerPage = () => {
     isPending: isCreatingSR,
     isError: isCreateSRError,
   } = useCreateServiceRequest();
-  const { mutate: approveSR, isPending: isApprovingSR } =
-    useApproveServiceRequest();
 
   // states to store create vehicle input values
   const [make, setMake] = useState<string>("");
@@ -75,6 +74,7 @@ export const CustomerPage = () => {
     <>
       <h1>Customer</h1>
 
+      {/* Vehicle section */}
       <h2>Vehicles</h2>
       {isVLoading && <p>Loading...</p>}
 
@@ -87,6 +87,7 @@ export const CustomerPage = () => {
         </div>
       ))}
 
+      {/* Add vehicle section */}
       <form onSubmit={(e) => handleSubmit(e)}>
         <label htmlFor="make-input">Make:</label>
         <input
@@ -124,6 +125,7 @@ export const CustomerPage = () => {
         {isCreateError && <p>Failed to add vehicle</p>}
       </form>
 
+      {/* Service request section */}
       <h2>Service Requests</h2>
       {isSRLoading && <p>Loading...</p>}
 
@@ -131,18 +133,16 @@ export const CustomerPage = () => {
 
       {serviceRequests?.map((sr) => (
         <div key={sr.id}>
-          [{sr.status}] {sr.initial_complaint}
-          {sr.status === "action_required" && (
-            <button disabled={isApprovingSR} onClick={() => approveSR(sr.id)}>
-              Approve
-            </button>
-          )}
+          <Link to={`/service-request/${sr.id}`}>
+            [{sr.status}] {sr.initial_complaint}
+          </Link>
         </div>
       ))}
 
+      {/* Create service request form */}
       <form onSubmit={(e) => handleCreateSR(e)}>
         <label htmlFor="vehicle-select">Vehicle:</label>
-        <select
+        <select 
           id="vehicle-select"
           value={selectedVehicleId}
           onChange={(e) => setSelectedVehicleId(e.target.value)}

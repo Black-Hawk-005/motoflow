@@ -4,34 +4,34 @@ import type {
   ServiceLineItemResponse,
 } from "../types/serviceLineItem";
 
-export const create_line_item = async (
-  line_item_details: ServiceLineItemCreatePayload,
+export const createLineItem = async (
+  lineItemDetails: ServiceLineItemCreatePayload,
 ): Promise<ServiceLineItemResponse> => {
   const response = await axiosClient.post<ServiceLineItemResponse>(
     "/line-items/",
-    line_item_details,
+    lineItemDetails,
   );
   return response.data;
 };
 
-export const list_line_items = async (
-  service_request_id: string,
+export const listLineItems = async (
+  serviceRequestId: string,
 ): Promise<ServiceLineItemResponse[]> => {
   const response = await axiosClient.get<ServiceLineItemResponse[]>(
     "/line-items/",
     {
-      params: { service_request_id },
+      params: { service_request_id: serviceRequestId },
     },
   );
 
   return response.data;
 };
 
-export const approve_line_item = async (
-  line_item_id: string,
+export const approveLineItem = async (
+  lineItemId: string,
 ): Promise<ServiceLineItemResponse> => {
   const response = await axiosClient.patch<ServiceLineItemResponse>(
-    `/line-items/${line_item_id}/approve`,
+    `/line-items/${lineItemId}/approve`,
   );
   return response.data;
 };

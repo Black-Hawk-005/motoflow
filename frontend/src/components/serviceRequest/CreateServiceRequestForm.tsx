@@ -1,10 +1,10 @@
 import type { SubmitEvent } from "react";
 import { useState } from "react";
 
-import { useCreateServiceRequest } from "../../hooks/useCreateServiceRequest";
-import { useVehicles } from "../../hooks/useVehicles";
+import { useCreateServiceRequest } from "../../hooks/serviceRequest/useCreateServiceRequest";
+import { useVehicles } from "../../hooks/vehicle/useVehicles";
 
-export const CreateSRForm = () => {
+export const CreateServiceRequestForm = () => {
   const {
     mutate: createSR,
     isPending: isCreatingSR,

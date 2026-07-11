@@ -2,13 +2,13 @@ import { useParams } from "react-router-dom";
 import { useState } from "react";
 import type { SubmitEvent } from "react";
 
-import { useServiceRequest } from "../hooks/useServiceRequest";
-import { useMe } from "../hooks/useMe";
-import { useLineItems } from "../hooks/useLineItems";
-import { useComments } from "../hooks/useComments";
-import { useCreateComment } from "../hooks/useCreateComment";
-import { useApproveLineItem } from "../hooks/useApproveLineItem";
-import { useApproveServiceRequest } from "../hooks/useApproveServiceRequest";
+import { useServiceRequest } from "../hooks/serviceRequest/useServiceRequest";
+import { useMe } from "../hooks/auth/useMe";
+import { useLineItems } from "../hooks/lineItem/useLineItems";
+import { useComments } from "../hooks/comment/useComments";
+import { useCreateComment } from "../hooks/comment/useCreateComment";
+import { useApproveLineItem } from "../hooks/lineItem/useApproveLineItem";
+import { useApproveServiceRequest } from "../hooks/serviceRequest/useApproveServiceRequest";
 
 const ServiceRequestDetail = () => {
   const { id: id } = useParams<{ id: string }>();

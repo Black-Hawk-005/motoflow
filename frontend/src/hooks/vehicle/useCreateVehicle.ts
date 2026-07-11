@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createVehicle } from "../api/vehicle";
+import { createVehicle } from "../../api/vehicle";
 
 export const useCreateVehicle = () => {
   const queryClient = useQueryClient();

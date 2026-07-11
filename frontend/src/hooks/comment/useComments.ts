@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { list_comments } from "../api/comment";
+import { list_comments } from "../../api/comment";
 
 export const useComments = (service_request_id: string) => {
   return useQuery({

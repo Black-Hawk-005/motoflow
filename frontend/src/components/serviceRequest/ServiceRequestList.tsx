@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-import { useServiceRequests } from "../../hooks/useServiceRequests";
+import { useServiceRequests } from "../../hooks/serviceRequest/useServiceRequests";
 
 export const ServiceRequestList = () => {
   const {

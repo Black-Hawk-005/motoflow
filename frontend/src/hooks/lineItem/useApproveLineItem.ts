@@ -1,13 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { create_comment } from "../api/comment";
+import { approve_line_item } from "../../api/serviceLineItem";
 
-export const useCreateComment = () => {
+export const useApproveLineItem = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: create_comment,
+    mutationFn: approve_line_item,
     onSuccess: (data) =>
       queryClient.invalidateQueries({
-        queryKey: ["comments", data.service_request_id],
+        queryKey: ["line-items", data.service_request_id],
       }),
   });
 };

@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { approveServiceRequest } from "../api/serviceRequest";
+import { approveServiceRequest } from "../../api/serviceRequest";
 
 export const useApproveServiceRequest = () => {
   const queryClient = useQueryClient();

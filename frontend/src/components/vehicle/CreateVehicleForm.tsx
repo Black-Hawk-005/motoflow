@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { SubmitEvent } from "react";
 
-import { useCreateVehicle } from "../../hooks/useCreateVehicle";
+import { useCreateVehicle } from "../../hooks/vehicle/useCreateVehicle";
 
 export const CreateVehicleForm = () => {
   const {

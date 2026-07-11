@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { listServiceRequests } from "../api/serviceRequest";
+import { listServiceRequests } from "../../api/serviceRequest";
 
 export const useServiceRequests = () => {
   return useQuery({

@@ -1,7 +1,7 @@
 import { VehicleList } from "../components/vehicle/VehicleList";
 import { CreateVehicleForm } from "../components/vehicle/CreateVehicleForm";
 import { ServiceRequestList } from "../components/serviceRequest/ServiceRequestList";
-import { CreateSRForm } from "../components/serviceRequest/CreateServiceRequestForm";
+import { CreateServiceRequestForm } from "../components/serviceRequest/CreateServiceRequestForm";
 
 export const CustomerPage = () => {
   return (
@@ -18,7 +18,7 @@ export const CustomerPage = () => {
       <ServiceRequestList />
 
       {/* Create service request form */}
-      <CreateSRForm />
+      <CreateServiceRequestForm />
     </>
   );
 };

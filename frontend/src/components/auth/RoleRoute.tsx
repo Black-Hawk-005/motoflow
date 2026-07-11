@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { useMe } from "../../hooks/useMe";
+import { useMe } from "../../hooks/auth/useMe";
 import type { User } from "../../types/auth";
 import { Navigate } from "react-router-dom";
 

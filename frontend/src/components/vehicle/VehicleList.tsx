@@ -1,4 +1,4 @@
-import { useVehicles } from "../../hooks/useVehicles";
+import { useVehicles } from "../../hooks/vehicle/useVehicles";
 
 export const VehicleList = () => {
   const {

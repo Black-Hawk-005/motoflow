@@ -1,5 +1,5 @@
 import { useState, type SubmitEvent } from "react";
-import { useLogin } from "../hooks/useLogin";
+import { useLogin } from "../hooks/auth/useLogin";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 export const LoginPage = () => {

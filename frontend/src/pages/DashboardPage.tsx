@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useMe } from "../hooks/useMe";
+import { useMe } from "../hooks/auth/useMe";
 import { useNavigate } from "react-router-dom";
 
 export const DashboardPage = () => {

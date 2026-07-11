@@ -22,3 +22,8 @@ export interface ServiceRequestCreatePayload {
   vehicle_id: string;
   initial_complaint: string;
 }
+
+export interface ServiceRequestUpdatePayload {
+  mechanic_id?: string;
+  status?: ServiceStatus;
+}

@@ -3,6 +3,7 @@ import axiosClient from "./client";
 import type {
   ServiceRequestResponse,
   ServiceRequestCreatePayload,
+  ServiceRequestUpdatePayload,
 } from "../types/serviceRequest";
 
 export const listServiceRequests = async (): Promise<
@@ -14,29 +15,41 @@ export const listServiceRequests = async (): Promise<
 };
 
 export const getServiceRequest = async (
-  service_request_id: string,
+  serviceRequestId: string,
 ): Promise<ServiceRequestResponse> => {
   const response = await axiosClient.get<ServiceRequestResponse>(
-    `/service-requests/${service_request_id}`,
+    `/service-requests/${serviceRequestId}`,
   );
   return response.data;
 };
 
 export const createServiceRequest = async (
-  service_request_details: ServiceRequestCreatePayload,
+  serviceRequestDetails: ServiceRequestCreatePayload,
 ): Promise<ServiceRequestResponse> => {
   const response = await axiosClient.post<ServiceRequestResponse>(
     "/service-requests/",
-    service_request_details,
+    serviceRequestDetails,
   );
   return response.data;
 };
 
 export const approveServiceRequest = async (
-  service_request_id: string,
+  serviceRequestId: string,
 ): Promise<ServiceRequestResponse> => {
   const response = await axiosClient.patch<ServiceRequestResponse>(
-    `/service-requests/${service_request_id}/approve`,
+    `/service-requests/${serviceRequestId}/approve`,
+  );
+  return response.data;
+};
+
+// mechanic and admin only method
+export const updateServiceRequest = async (
+  serviceRequestId: string,
+  updateDetails: ServiceRequestUpdatePayload,
+): Promise<ServiceRequestResponse> => {
+  const response = await axiosClient.patch<ServiceRequestResponse>(
+    `/service-requests/${serviceRequestId}`,
+    updateDetails,
   );
   return response.data;
 };

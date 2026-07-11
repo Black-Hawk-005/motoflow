@@ -1,8 +1,8 @@
 import { Route, Routes } from "react-router-dom";
 import { LoginPage } from "./pages/LoginPage";
 import { DashboardPage } from "./pages/DashboardPage";
-import { PrivateRoute } from "./components/PrivateRoute";
-import { RoleRoute } from "./components/RoleRoute";
+import { PrivateRoute } from "./components/auth/PrivateRoute";
+import { RoleRoute } from "./components/auth/RoleRoute";
 import { CustomerPage } from "./pages/CustomerPage";
 import { MechanicPage } from "./pages/MechanicPage";
 import { AdminPage } from "./pages/AdminPage";

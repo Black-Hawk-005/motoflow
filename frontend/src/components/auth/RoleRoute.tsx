@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
-import { useMe } from "../hooks/useMe";
-import type { User } from "../types/auth";
+import { useMe } from "../../hooks/useMe";
+import type { User } from "../../types/auth";
 import { Navigate } from "react-router-dom";
 
 interface RoleRouteProps {

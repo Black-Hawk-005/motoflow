@@ -10,6 +10,7 @@ from app import models
 from app.database import get_db
 from app.dependencies import get_current_user
 from app.schemas import (
+    CommentAuthor,
     CommentCreate,
     CommentRead,
     UserRole,
@@ -52,16 +53,24 @@ async def post_comment(
             detail="No service request found",
         )
 
+    comment_author = CommentAuthor.model_validate(current_user)
     comment = models.Comment(
         service_request_id=service_request.id,
-        author_id=current_user.id,
+        author_id=comment_author.id,
         message=comment_details.message,
     )
+
     db.add(comment)
     await db.commit()
     await db.refresh(comment)
 
-    return comment
+    return CommentRead(
+        id=comment.id,
+        service_request_id=service_request.id,
+        author=comment_author,
+        message=comment.message,
+        created_at=comment.created_at,
+    )
 
 
 @router.get("/", response_model=List[CommentRead])
@@ -100,4 +109,18 @@ async def list_comments(
         )
     )
     comments = results.scalars().all()
-    return comments
+    author_ids = {c.author_id for c in comments}
+    authors = await db.execute(
+        select(models.User).where(models.User.id.in_(author_ids))
+    )
+    users_by_id = {u.id: u for u in authors.scalars().all()}
+    return [
+        CommentRead(
+            id=c.id,
+            service_request_id=c.service_request_id,
+            author=CommentAuthor.model_validate(users_by_id[c.author_id]),
+            message=c.message,
+            created_at=c.created_at,
+        )
+        for c in comments
+    ]

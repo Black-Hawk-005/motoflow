@@ -6,6 +6,7 @@ import { useApproveServiceRequest } from "../hooks/serviceRequest/useApproveServ
 import { LineItemsList } from "../components/lineItems/LineItemsList";
 import { CommentList } from "../components/comments/CommentList";
 import { CreateCommentForm } from "../components/comments/CreateCommentForm";
+import { CreateLineItemForm } from "../components/lineItems/CreateLineItemForm";
 
 const ServiceRequestDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -43,6 +44,7 @@ const ServiceRequestDetail = () => {
       <p>Created at: {serviceRequest?.created_at}</p>
 
       <LineItemsList id={id as string} />
+      <CreateLineItemForm id={id as string} />
 
       <h3>Messages:</h3>
       <CommentList id={id as string} />

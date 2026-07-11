@@ -1,7 +1,10 @@
+import { ServiceRequestList } from "../components/serviceRequest/ServiceRequestList";
+
 export const MechanicPage = () => {
   return (
     <>
-      <h1>Customer</h1>
+      <h1>Welcome </h1>
+      <ServiceRequestList />
     </>
   );
 };

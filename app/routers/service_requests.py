@@ -129,11 +129,6 @@ async def update_request(
     ],
 ):
     update_data = update_details.model_dump(exclude_unset=True)
-    if "mechanic_id" in update_data and current_user.role == UserRole.MECHANIC:
-        raise HTTPException(
-            status_code=http_status.HTTP_403_FORBIDDEN,
-            detail="Admin only operation performed",
-        )
     result = await db.execute(
         select(models.ServiceRequest).where((models.ServiceRequest.id) == request_id)
     )
@@ -144,9 +139,37 @@ async def update_request(
             detail="Request not found",
         )
 
-    if "status" in update_data and update_data["status"] not in VALID_TRANSITIONS.get(
-        request.status, set()
-    ):
+    if "mechanic_id" in update_data:
+        if current_user.role == UserRole.MECHANIC:
+            raise HTTPException(
+                status_code=http_status.HTTP_403_FORBIDDEN,
+                detail="Admin only operation performed",
+            )
+        if not update_data.get("mechanic_id") or (
+            request.status == ServiceStatus.PENDING
+            and update_data.get("status") != ServiceStatus.ASSIGNED
+        ):
+            raise HTTPException(
+                status_code=http_status.HTTP_400_BAD_REQUEST,
+                detail="Invalid request",
+            )
+
+        result = await db.execute(
+            select(models.User).where(
+                models.User.id == update_data["mechanic_id"],
+                models.User.role == UserRole.MECHANIC,
+            )
+        )
+        mechanic = result.scalar_one_or_none()
+        if mechanic is None:
+            raise HTTPException(
+                status_code=http_status.HTTP_400_BAD_REQUEST,
+                detail="Invalid request",
+            )
+
+    if "status" in update_data and update_data.get(
+        "status"
+    ) not in VALID_TRANSITIONS.get(request.status, set()):
         raise HTTPException(
             status_code=http_status.HTTP_400_BAD_REQUEST,
             detail="Invalid status change",

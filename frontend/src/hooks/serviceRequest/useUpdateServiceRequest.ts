@@ -9,9 +9,10 @@ export const useUpdateServiceRequest = () => {
       id: string;
       payload: ServiceRequestUpdatePayload;
     }) => updateServiceRequest(variables.id, variables.payload),
-    onSuccess: () =>
-      queryClient.invalidateQueries({
-        queryKey: ["service-requests"],
-      }),
+    onSuccess: () => {
+      queryClient
+        .invalidateQueries({ queryKey: ["service-requests"] })
+        .catch(() => {});
+    },
   });
 };

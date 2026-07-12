@@ -21,11 +21,11 @@ router = APIRouter()
 VALID_TRANSITIONS = {
     ServiceStatus.PENDING: {ServiceStatus.ASSIGNED},
     ServiceStatus.ASSIGNED: {ServiceStatus.IN_PROGRESS},
-    ServiceStatus.IN_PROGRESS: {
-        ServiceStatus.ACTION_REQUIRED,
-        ServiceStatus.APPROVED,
+    ServiceStatus.IN_PROGRESS: {ServiceStatus.ACTION_REQUIRED, ServiceStatus.COMPLETED},
+    ServiceStatus.APPROVED: {
+        ServiceStatus.COMPLETED,
+        ServiceStatus.IN_PROGRESS,
     },
-    ServiceStatus.APPROVED: {ServiceStatus.COMPLETED},
     ServiceStatus.COMPLETED: {ServiceStatus.CLOSED},
 }
 
@@ -188,7 +188,7 @@ async def update_request(
         setattr(request, field, value)
 
     await db.commit()
-    await db.refresh(request, attribute_names=["mechanic_id", "status"])
+    await db.refresh(request)
 
     return request
 
@@ -230,6 +230,6 @@ async def approve_request(
     request.status = ServiceStatus.APPROVED
 
     await db.commit()
-    await db.refresh(request, attribute_names=["status"])
+    await db.refresh(request)
 
     return request

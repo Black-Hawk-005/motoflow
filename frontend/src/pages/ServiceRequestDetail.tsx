@@ -7,6 +7,7 @@ import { LineItemsList } from "../components/lineItems/LineItemsList";
 import { CommentList } from "../components/comments/CommentList";
 import { CreateCommentForm } from "../components/comments/CreateCommentForm";
 import { CreateLineItemForm } from "../components/lineItems/CreateLineItemForm";
+import { UpdateStatusControl } from "../components/serviceRequest/updateStatusControl";
 
 const ServiceRequestDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -39,6 +40,7 @@ const ServiceRequestDetail = () => {
           </button>
         )}
       {isApproveSRError && <p>Failed to approve service request</p>}
+      <UpdateStatusControl id={id as string} />
       <p>Initial Complaint</p>
       <p>{serviceRequest?.initial_complaint}</p>
       <p>Created at: {serviceRequest?.created_at}</p>

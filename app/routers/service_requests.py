@@ -12,6 +12,7 @@ from app.dependencies import get_current_user, require_customer, require_roles
 from app.schemas import (
     ServiceRequestCreate,
     ServiceRequestRead,
+    ServiceRequestReject,
     ServiceRequestUpdate,
     ServiceStatus,
     UserRole,
@@ -229,6 +230,55 @@ async def approve_request(
 
     request.status = ServiceStatus.APPROVED
 
+    await db.commit()
+    await db.refresh(request)
+
+    return request
+
+
+@router.patch(
+    "/{request_id}/reject",
+    response_model=ServiceRequestRead,
+)
+async def reject_request(
+    reject_details: ServiceRequestReject,
+    request_id: UUID,
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[
+        models.User,
+        Depends(require_customer),
+    ],
+):
+    result = await db.execute(
+        select(models.ServiceRequest).where((models.ServiceRequest.id) == request_id)
+    )
+    request = result.scalar_one_or_none()
+    if not request:
+        raise HTTPException(
+            status_code=http_status.HTTP_404_NOT_FOUND,
+            detail="Request not found",
+        )
+
+    if request.customer_id != current_user.id:
+        raise HTTPException(
+            status_code=http_status.HTTP_404_NOT_FOUND,
+            detail="Request not found",
+        )
+
+    if request.status != ServiceStatus.ACTION_REQUIRED:
+        raise HTTPException(
+            status_code=http_status.HTTP_400_BAD_REQUEST,
+            detail="Invalid status change",
+        )
+
+    request.status = ServiceStatus.IN_PROGRESS
+    reject_comment = models.Comment(
+        service_request_id=request_id,
+        author_id=current_user.id,
+        message=reject_details.message,
+    )
+
+    db.add(reject_comment)
     await db.commit()
     await db.refresh(request)
 

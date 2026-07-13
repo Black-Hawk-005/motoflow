@@ -96,6 +96,10 @@ class ServiceRequestUpdate(BaseModel):
     status: Optional[ServiceStatus] = None
 
 
+class ServiceRequestReject(BaseModel):
+    message: str
+
+
 class ServiceLineItemCreate(BaseModel):
     service_request_id: UUID
     description: str = Field(min_length=10)

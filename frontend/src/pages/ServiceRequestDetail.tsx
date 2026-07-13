@@ -8,6 +8,7 @@ import { CommentList } from "../components/comments/CommentList";
 import { CreateCommentForm } from "../components/comments/CreateCommentForm";
 import { CreateLineItemForm } from "../components/lineItems/CreateLineItemForm";
 import { UpdateStatusControl } from "../components/serviceRequest/updateStatusControl";
+import { RejectServiceRequestApprovalForm } from "../components/serviceRequest/RejectServiceRequestApprovalForm";
 
 const ServiceRequestDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -38,6 +39,10 @@ const ServiceRequestDetail = () => {
           >
             Approve
           </button>
+        )}
+      {user?.role === "customer" &&
+        serviceRequest?.status === "action_required" && (
+          <RejectServiceRequestApprovalForm id={id as string} />
         )}
       {isApproveSRError && <p>Failed to approve service request</p>}
       <UpdateStatusControl id={id as string} />

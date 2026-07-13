@@ -4,6 +4,7 @@ import type {
   ServiceRequestResponse,
   ServiceRequestCreatePayload,
   ServiceRequestUpdatePayload,
+  ServiceRequestRejectPayload,
 } from "../types/serviceRequest";
 
 export const listServiceRequests = async (): Promise<
@@ -38,6 +39,17 @@ export const approveServiceRequest = async (
 ): Promise<ServiceRequestResponse> => {
   const response = await axiosClient.patch<ServiceRequestResponse>(
     `/service-requests/${serviceRequestId}/approve`,
+  );
+  return response.data;
+};
+
+export const rejectServiceRequest = async (
+  serviceRequestId: string,
+  rejectRequestPayload: ServiceRequestRejectPayload,
+): Promise<ServiceRequestResponse> => {
+  const response = await axiosClient.patch<ServiceRequestResponse>(
+    `/service-requests/${serviceRequestId}/reject`,
+    rejectRequestPayload,
   );
   return response.data;
 };

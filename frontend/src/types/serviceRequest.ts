@@ -27,3 +27,7 @@ export interface ServiceRequestUpdatePayload {
   mechanic_id?: string;
   status?: ServiceStatus;
 }
+
+export interface ServiceRequestRejectPayload {
+  message: string;
+}

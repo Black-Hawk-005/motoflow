@@ -21,7 +21,7 @@ router = APIRouter()
 VALID_TRANSITIONS = {
     ServiceStatus.PENDING: {ServiceStatus.ASSIGNED},
     ServiceStatus.ASSIGNED: {ServiceStatus.IN_PROGRESS},
-    ServiceStatus.IN_PROGRESS: {ServiceStatus.ACTION_REQUIRED, ServiceStatus.COMPLETED},
+    ServiceStatus.IN_PROGRESS: {ServiceStatus.ACTION_REQUIRED},
     ServiceStatus.APPROVED: {
         ServiceStatus.COMPLETED,
         ServiceStatus.IN_PROGRESS,

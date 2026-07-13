@@ -99,7 +99,7 @@ async def approve_line_item(
 
     line_item.is_approved = True
     await db.commit()
-    await db.refresh(line_item, attribute_names=["is_approved"])
+    await db.refresh(line_item)
 
     return line_item
 

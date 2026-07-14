@@ -116,6 +116,11 @@ class ServiceLineItemRead(BaseModel):
     is_approved: bool
 
 
+class ServiceLineItemUpdate(BaseModel):
+    description: Optional[str] = Field(default=None, min_length=10)
+    cost: Optional[Decimal] = Field(default=None, gt=0)
+
+
 class CommentCreate(BaseModel):
     service_request_id: UUID
     message: str = Field(min_length=10)

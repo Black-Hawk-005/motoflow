@@ -228,6 +228,20 @@ async def approve_request(
             detail="Invalid status change",
         )
 
+    result = await db.execute(
+        select(models.ServiceLineItem).where(
+            (models.ServiceLineItem.service_request_id) == request_id
+        )
+    )
+    line_items = result.scalars().all()
+
+    for line_item in line_items:
+        if line_item.is_approved == False:
+            raise HTTPException(
+                status_code=http_status.HTTP_400_BAD_REQUEST,
+                detail="All line items are not approved"
+            )
+
     request.status = ServiceStatus.APPROVED
 
     await db.commit()

@@ -3,7 +3,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi import status as http_status
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import models
@@ -12,6 +12,7 @@ from app.dependencies import get_current_user, require_customer, require_mechani
 from app.schemas import (
     ServiceLineItemCreate,
     ServiceLineItemRead,
+    ServiceLineItemUpdate,
     ServiceStatus,
     UserRole,
 )
@@ -59,6 +60,119 @@ async def create_line_item(
     await db.refresh(line_item)
 
     return line_item
+
+
+@router.patch("/{line_item_id}", response_model=ServiceLineItemRead)
+async def update_line_item(
+    line_item_id: UUID,
+    update_details: ServiceLineItemUpdate,
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[models.User, Depends(require_mechanic)],
+):
+    result = await db.execute(
+        select(models.ServiceLineItem).where(
+            (models.ServiceLineItem.id) == line_item_id
+        )
+    )
+    line_item = result.scalar_one_or_none()
+    if not line_item:
+        raise HTTPException(
+            status_code=http_status.HTTP_404_NOT_FOUND,
+            detail="Invalid request",
+        )
+
+    result = await db.execute(
+        select(models.ServiceRequest).where(
+            (models.ServiceRequest.id) == line_item.service_request_id
+        )
+    )
+    service_request = result.scalar_one_or_none()
+    if not service_request:
+        raise HTTPException(
+            status_code=http_status.HTTP_404_NOT_FOUND,
+            detail="Service request doesn't exist",
+        )
+
+    if service_request.mechanic_id != current_user.id:
+        raise HTTPException(
+            status_code=http_status.HTTP_404_NOT_FOUND,
+            detail="Service request doesn't exist",
+        )
+
+    if service_request.status in {
+        ServiceStatus.COMPLETED,
+        ServiceStatus.CLOSED,
+        ServiceStatus.APPROVED,
+    }:
+        raise HTTPException(
+            status_code=http_status.HTTP_400_BAD_REQUEST,
+            detail="Service request already completed/closed",
+        )
+
+    update_data = update_details.model_dump(exclude_unset=True)
+    for field, value in update_data.items():
+        setattr(line_item, field, value)
+
+    line_item.is_approved = False
+
+    await db.commit()
+    await db.refresh(line_item)
+
+    return line_item
+
+
+@router.delete("/{line_item_id}", status_code=http_status.HTTP_204_NO_CONTENT)
+async def delete_line_item(
+    line_item_id: UUID,
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[models.User, Depends(require_mechanic)],
+):
+    result = await db.execute(
+        select(models.ServiceLineItem).where(
+            (models.ServiceLineItem.id) == line_item_id
+        )
+    )
+    line_item = result.scalar_one_or_none()
+    if not line_item:
+        raise HTTPException(
+            status_code=http_status.HTTP_404_NOT_FOUND,
+            detail="Invalid request",
+        )
+
+    result = await db.execute(
+        select(models.ServiceRequest).where(
+            (models.ServiceRequest.id) == line_item.service_request_id
+        )
+    )
+    service_request = result.scalar_one_or_none()
+    if not service_request:
+        raise HTTPException(
+            status_code=http_status.HTTP_404_NOT_FOUND,
+            detail="Service request doesn't exist",
+        )
+
+    if service_request.mechanic_id != current_user.id:
+        raise HTTPException(
+            status_code=http_status.HTTP_404_NOT_FOUND,
+            detail="Service request doesn't exist",
+        )
+
+    if service_request.status in {
+        ServiceStatus.COMPLETED,
+        ServiceStatus.CLOSED,
+        ServiceStatus.APPROVED,
+    }:
+        raise HTTPException(
+            status_code=http_status.HTTP_400_BAD_REQUEST,
+            detail="Service request already completed/closed",
+        )
+
+    await db.execute(
+        delete(models.ServiceLineItem).where(
+            (models.ServiceLineItem.id) == line_item_id
+        )
+    )
+    await db.commit()
 
 
 @router.patch("/{line_item_id}/approve", response_model=ServiceLineItemRead)

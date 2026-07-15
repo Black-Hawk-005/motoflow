@@ -11,3 +11,8 @@ export interface ServiceLineItemResponse {
   cost: string;
   is_approved: boolean;
 }
+
+export interface ServiceLineItemUpdatePayload {
+  description?: string;
+  cost?: string;
+}

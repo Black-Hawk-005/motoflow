@@ -2,6 +2,7 @@ import axiosClient from "./client";
 import type {
   ServiceLineItemCreatePayload,
   ServiceLineItemResponse,
+  ServiceLineItemUpdatePayload,
 } from "../types/serviceLineItem";
 
 export const createLineItem = async (
@@ -27,6 +28,17 @@ export const listLineItems = async (
   return response.data;
 };
 
+export const updateLineItem = async (
+  lineItemId: string,
+  lineItemUpdateDetails: ServiceLineItemUpdatePayload,
+): Promise<ServiceLineItemResponse> => {
+  const response = await axiosClient.patch<ServiceLineItemResponse>(
+    `/line-items/${lineItemId}`,
+    lineItemUpdateDetails,
+  );
+  return response.data;
+};
+
 export const approveLineItem = async (
   lineItemId: string,
 ): Promise<ServiceLineItemResponse> => {
@@ -34,4 +46,8 @@ export const approveLineItem = async (
     `/line-items/${lineItemId}/approve`,
   );
   return response.data;
+};
+
+export const deleteLineItem = async (lineItemId: string): Promise<void> => {
+  await axiosClient.delete(`/line-items/${lineItemId}`);
 };

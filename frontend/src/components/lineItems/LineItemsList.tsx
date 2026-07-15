@@ -3,6 +3,7 @@ import { useApproveLineItem } from "../../hooks/lineItem/useApproveLineItem";
 import { useMe } from "../../hooks/auth/useMe";
 
 import { LineItemEditForm } from "./LineItemEditForm";
+import { useServiceRequest } from "../../hooks/serviceRequest/useServiceRequest";
 
 interface LineItemsListProps {
   id: string;
@@ -11,6 +12,12 @@ interface LineItemsListProps {
 export const LineItemsList = (props: LineItemsListProps) => {
   const { data: lineItems, isLoading: isLILoading } = useLineItems(props.id);
   const { data: user, isLoading: isRoleLoading } = useMe();
+  const { data: serviceRequest, isLoading: isSRLoading } = useServiceRequest(
+    props.id,
+  );
+  const isLocked =
+    serviceRequest &&
+    ["approved", "completed", "closed"].includes(serviceRequest.status);
 
   const {
     mutate: approveLI,
@@ -29,16 +36,18 @@ export const LineItemsList = (props: LineItemsListProps) => {
             <li key={lineItem.id}>
               {lineItem.description} - ${lineItem.cost} -{" "}
               {lineItem.is_approved ? "Approved" : "Pending"}
-              {user?.role === "customer" && !lineItem.is_approved && (
-                <button
-                  disabled={isALPending}
-                  onClick={() => approveLI(lineItem.id)}
-                >
-                  Approve
-                </button>
-              )}
+              {user?.role === "customer" &&
+                !lineItem.is_approved &&
+                !isLocked && (
+                  <button
+                    disabled={isALPending}
+                    onClick={() => approveLI(lineItem.id)}
+                  >
+                    Approve
+                  </button>
+                )}
               {isALError && <p>Failed to approve</p>}
-              {user?.role === "mechanic" && (
+              {user?.role === "mechanic" && !isLocked && (
                 <LineItemEditForm lineItem={lineItem} />
               )}
             </li>

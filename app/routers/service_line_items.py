@@ -43,7 +43,11 @@ async def create_line_item(
             detail="Service request doesn't exist",
         )
 
-    if service_request.status in (ServiceStatus.PENDING, ServiceStatus.CLOSED):
+    if service_request.status in (
+        ServiceStatus.CLOSED,
+        ServiceStatus.COMPLETED,
+        ServiceStatus.APPROVED,
+    ):
         raise HTTPException(
             status_code=http_status.HTTP_400_BAD_REQUEST,
             detail="Invalid service request status",

@@ -2,6 +2,8 @@ import { useLineItems } from "../../hooks/lineItem/useLineItems";
 import { useApproveLineItem } from "../../hooks/lineItem/useApproveLineItem";
 import { useMe } from "../../hooks/auth/useMe";
 
+import { LineItemEditForm } from "./LineItemEditForm";
+
 interface LineItemsListProps {
   id: string;
 }
@@ -9,6 +11,7 @@ interface LineItemsListProps {
 export const LineItemsList = (props: LineItemsListProps) => {
   const { data: lineItems, isLoading: isLILoading } = useLineItems(props.id);
   const { data: user, isLoading: isRoleLoading } = useMe();
+
   const {
     mutate: approveLI,
     isPending: isALPending,
@@ -35,6 +38,9 @@ export const LineItemsList = (props: LineItemsListProps) => {
                 </button>
               )}
               {isALError && <p>Failed to approve</p>}
+              {user?.role === "mechanic" && (
+                <LineItemEditForm lineItem={lineItem} />
+              )}
             </li>
           ))}
         </ul>

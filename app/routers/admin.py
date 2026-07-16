@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import or_, select
@@ -58,3 +58,17 @@ async def create_user(
     await db.refresh(new_user)
 
     return new_user
+
+
+@router.get("/users", response_model=List[UserRead])
+async def list_users(
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[models.User, Depends(require_admin)],
+    role: Optional[UserRole] = None,
+):
+    if role:
+        result = await db.execute(select(models.User).where((models.User.role) == role))
+    else:
+        result = await db.execute(select(models.User))
+    users = result.scalars().all()
+    return users

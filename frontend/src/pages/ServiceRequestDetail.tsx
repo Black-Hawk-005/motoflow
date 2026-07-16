@@ -45,6 +45,7 @@ const ServiceRequestDetail = () => {
       {user?.role === "admin" && (
         <AssignMechanicControl
           serviceRequestId={serviceRequest?.id as string}
+          mechanicId={serviceRequest?.mechanic_id as string}
         />
       )}
 

@@ -4,10 +4,11 @@ import { useUpdateServiceRequest } from "../../hooks/serviceRequest/useUpdateSer
 
 interface AssignMechanicControlProps {
   serviceRequestId: string;
+  mechanicId: string;
 }
 
 export const AssignMechanicControl = (props: AssignMechanicControlProps) => {
-  const [mechanicId, setMechanicId] = useState("");
+  const [mechanicId, setMechanicId] = useState(props.mechanicId ?? "");
 
   const {
     mutate: updateServiceRequest,

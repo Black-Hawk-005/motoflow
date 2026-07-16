@@ -20,7 +20,7 @@ export const UsersList = () => {
 
   return (
     <div>
-      <h3>Users</h3>
+      <h2>Users</h2>
       {isUsersLoading && <p>Loading...</p>}
       {roleOptions.map((r) => (
         <button onClick={() => setRole(r.value)}>{r.label}</button>

@@ -1,10 +1,12 @@
 import { useState, type SubmitEvent } from "react";
 import { useUsers } from "../../hooks/admin/useUsers";
 import { useUpdateServiceRequest } from "../../hooks/serviceRequest/useUpdateServiceRequest";
+import type { ServiceStatus } from "../../types/serviceRequest";
 
 interface AssignMechanicControlProps {
   serviceRequestId: string;
   mechanicId: string;
+  status: ServiceStatus;
 }
 
 export const AssignMechanicControl = (props: AssignMechanicControlProps) => {
@@ -24,12 +26,17 @@ export const AssignMechanicControl = (props: AssignMechanicControlProps) => {
 
   const handleAssignment = (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const payload: { mechanic_id: string; status?: ServiceStatus } = {
+      mechanic_id: mechanicId,
+    };
+
+    if (props.status === "pending") {
+      payload.status = "assigned";
+    }
+
     updateServiceRequest({
       id: props.serviceRequestId,
-      payload: {
-        mechanic_id: mechanicId,
-        status: "assigned",
-      },
+      payload,
     });
   };
 

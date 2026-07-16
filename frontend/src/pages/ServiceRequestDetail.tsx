@@ -11,6 +11,7 @@ import { CreateLineItemForm } from "../components/lineItems/CreateLineItemForm";
 import { UpdateStatusControl } from "../components/serviceRequest/updateStatusControl";
 import { RejectServiceRequestApprovalForm } from "../components/serviceRequest/RejectServiceRequestApprovalForm";
 import { AssignMechanicControl } from "../components/serviceRequest/AssignMechanicControl";
+import type { ServiceStatus } from "../types/serviceRequest";
 
 const ServiceRequestDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -46,6 +47,7 @@ const ServiceRequestDetail = () => {
         <AssignMechanicControl
           serviceRequestId={serviceRequest?.id as string}
           mechanicId={serviceRequest?.mechanic_id as string}
+          status={serviceRequest?.status as ServiceStatus}
         />
       )}
 

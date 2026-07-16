@@ -16,6 +16,7 @@ export const LineItemsList = (props: LineItemsListProps) => {
     props.id,
   );
   const isLocked =
+    !isSRLoading &&
     serviceRequest &&
     ["approved", "completed", "closed"].includes(serviceRequest.status);
 

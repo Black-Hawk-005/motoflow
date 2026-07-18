@@ -17,3 +17,11 @@ export interface RegisterPayload {
   password: string;
   phone: string;
 }
+
+export interface AdminUserCreatePayload {
+  full_name: string;
+  email: string;
+  password: string;
+  phone: string;
+  role: User["role"];
+}

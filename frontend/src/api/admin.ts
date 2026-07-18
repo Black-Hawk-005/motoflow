@@ -1,4 +1,4 @@
-import type { User } from "../types/auth";
+import type { AdminUserCreatePayload, User } from "../types/auth";
 import axiosClient from "./client";
 
 export const listUsers = async (role?: User["role"]): Promise<User[]> => {
@@ -11,4 +11,11 @@ export const listUsers = async (role?: User["role"]): Promise<User[]> => {
     const response = await axiosClient.get<Promise<User[]>>(`/admin/users`);
     return response.data;
   }
+};
+
+export const createUser = async (
+  userData: AdminUserCreatePayload,
+): Promise<User> => {
+  const response = await axiosClient.post<User>(`/admin/users`, userData);
+  return response.data;
 };

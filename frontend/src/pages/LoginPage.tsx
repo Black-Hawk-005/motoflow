@@ -1,11 +1,12 @@
 import { useState, type SubmitEvent } from "react";
 import { useLogin } from "../hooks/auth/useLogin";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { extractErrorMessage } from "../utils/error";
 
 export const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { mutate, isPending, isError } = useLogin();
+  const { mutate, isPending, isError, error } = useLogin();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
@@ -38,7 +39,7 @@ export const LoginPage = () => {
         <button type="submit" disabled={isPending}>
           {isPending ? "Logging in..." : "Login"}
         </button>
-        {isError && <p>Login Failed</p>}
+        {isError && <p>{extractErrorMessage(error)}</p>}
       </form>
     </>
   );

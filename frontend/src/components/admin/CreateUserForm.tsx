@@ -3,12 +3,14 @@ import type { SubmitEvent } from "react";
 
 import { useCreateUser } from "../../hooks/admin/useCreateUser";
 import type { User } from "../../types/auth";
+import { extractErrorMessage } from "../../utils/error";
 
 export const CreateUserForm = () => {
   const {
     mutate: createUser,
     isPending: isCreatePending,
     isError: isCreateError,
+    error: createUserError,
   } = useCreateUser();
 
   const [full_name, setFullName] = useState<string>("");
@@ -82,7 +84,7 @@ export const CreateUserForm = () => {
         {isCreatePending ? "Creating..." : "Create User"}
       </button>
 
-      {isCreateError && <p>Failed to create user</p>}
+      {isCreateError && <p>{extractErrorMessage(createUserError)}</p>}
     </form>
   );
 };

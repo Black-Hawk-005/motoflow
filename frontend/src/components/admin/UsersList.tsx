@@ -2,6 +2,7 @@ import { useState, type SubmitEvent, useEffect } from "react";
 
 import { useUsers } from "../../hooks/admin/useUsers";
 import type { User } from "../../types/auth";
+import { extractErrorMessage } from "../../utils/error";
 
 export const UsersList = () => {
   const [role, setRole] = useState<User["role"] | undefined>(undefined);
@@ -16,6 +17,7 @@ export const UsersList = () => {
     data: users,
     isLoading: isUsersLoading,
     isError: isUsersError,
+    error: usersError,
   } = useUsers(role);
 
   return (
@@ -47,7 +49,7 @@ export const UsersList = () => {
           ))}
         </tbody>
       </table>
-      {isUsersError && <p>Unable to load users</p>}
+      {isUsersError && <p>{extractErrorMessage(usersError)}</p>}
     </div>
   );
 };

@@ -2,12 +2,14 @@ import { useState } from "react";
 import type { SubmitEvent } from "react";
 
 import { useCreateVehicle } from "../../hooks/vehicle/useCreateVehicle";
+import { extractErrorMessage } from "../../utils/error";
 
 export const CreateVehicleForm = () => {
   const {
     mutate: createVehicle,
     isPending: isVPending,
     isError: isCreateError,
+    error: createVehicleError,
   } = useCreateVehicle();
 
   const [make, setMake] = useState<string>("");
@@ -65,7 +67,7 @@ export const CreateVehicleForm = () => {
         {isVPending ? "Adding..." : "Submit"}
       </button>
 
-      {isCreateError && <p>Failed to add vehicle</p>}
+      {isCreateError && <p>{extractErrorMessage(createVehicleError)}</p>}
     </form>
   );
 };

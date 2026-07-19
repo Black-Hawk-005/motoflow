@@ -2,6 +2,7 @@ import { type SubmitEvent, useState } from "react";
 
 import { useMe } from "../../hooks/auth/useMe";
 import { useCreateLineItem } from "../../hooks/lineItem/useCreateLineItem";
+import { extractErrorMessage } from "../../utils/error";
 
 interface CreateLineItemProps {
   id: string;
@@ -12,6 +13,7 @@ export const CreateLineItemForm = (props: CreateLineItemProps) => {
     mutate: createLineItem,
     isPending: isLIPending,
     isError: isLIError,
+    error: createLIError,
   } = useCreateLineItem();
   const { data: user } = useMe();
 
@@ -60,7 +62,7 @@ export const CreateLineItemForm = (props: CreateLineItemProps) => {
           Create
         </button>
       </form>
-      {isLIError && <p>Failed to create line item</p>}
+      {isLIError && <p>{extractErrorMessage(createLIError)}</p>}
     </>
   );
 };

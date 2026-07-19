@@ -4,6 +4,7 @@ import { useMe } from "../../hooks/auth/useMe";
 
 import { LineItemEditForm } from "./LineItemEditForm";
 import { useServiceRequest } from "../../hooks/serviceRequest/useServiceRequest";
+import { extractErrorMessage } from "../../utils/error";
 
 interface LineItemsListProps {
   id: string;
@@ -24,6 +25,7 @@ export const LineItemsList = (props: LineItemsListProps) => {
     mutate: approveLI,
     isPending: isALPending,
     isError: isALError,
+    error: approveLIError,
   } = useApproveLineItem();
 
   return (
@@ -47,7 +49,7 @@ export const LineItemsList = (props: LineItemsListProps) => {
                     Approve
                   </button>
                 )}
-              {isALError && <p>Failed to approve</p>}
+              {isALError && <p>{extractErrorMessage(approveLIError)}</p>}
               {user?.role === "mechanic" && !isLocked && (
                 <LineItemEditForm lineItem={lineItem} />
               )}

@@ -3,6 +3,7 @@ import { useState, type SubmitEvent } from "react";
 import { useUpdateLineItem } from "../../hooks/lineItem/useUpdateLineItem";
 import { useDeleteLineItem } from "../../hooks/lineItem/useDeleteLineItem";
 import type { ServiceLineItemResponse } from "../../types/serviceLineItem";
+import { extractErrorMessage } from "../../utils/error";
 
 interface LineItemEditFormProps {
   lineItem: ServiceLineItemResponse;
@@ -18,11 +19,13 @@ export const LineItemEditForm = (props: LineItemEditFormProps) => {
     mutate: updateLI,
     isPending: isULPending,
     isError: isULError,
+    error: updateLIError,
   } = useUpdateLineItem();
   const {
     mutate: deleteLI,
     isPending: isDLPending,
     isError: isDLError,
+    error: deleteLIError,
   } = useDeleteLineItem();
 
   const handleLineItemUpdate = (
@@ -57,7 +60,7 @@ export const LineItemEditForm = (props: LineItemEditFormProps) => {
       <button type="submit" disabled={isULPending}>
         Update
       </button>
-      {isULError && <p>Line Item update failed</p>}
+      {isULError && <p>{extractErrorMessage(updateLIError)}</p>}
       <button
         type="button"
         disabled={isDLPending}
@@ -70,7 +73,7 @@ export const LineItemEditForm = (props: LineItemEditFormProps) => {
       >
         Delete
       </button>
-      {isDLError && <p>Failed to delete line item</p>}
+      {isDLError && <p>{extractErrorMessage(deleteLIError)}</p>}
     </form>
   );
 };

@@ -12,6 +12,7 @@ import { UpdateStatusControl } from "../components/serviceRequest/updateStatusCo
 import { RejectServiceRequestApprovalForm } from "../components/serviceRequest/RejectServiceRequestApprovalForm";
 import { AssignMechanicControl } from "../components/serviceRequest/AssignMechanicControl";
 import type { ServiceStatus } from "../types/serviceRequest";
+import { extractErrorMessage } from "../utils/error";
 
 const ServiceRequestDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -23,6 +24,7 @@ const ServiceRequestDetail = () => {
     mutate: approveSR,
     isPending: isApprovingSR,
     isError: isApproveSRError,
+    error: approveSRError,
   } = useApproveServiceRequest();
 
   if (isSRLoading || isRoleLoading) {
@@ -56,7 +58,7 @@ const ServiceRequestDetail = () => {
           <RejectServiceRequestApprovalForm id={id as string} />
         )}
 
-      {isApproveSRError && <p>Failed to approve service request</p>}
+      {isApproveSRError && <p>{extractErrorMessage(approveSRError)}</p>}
 
       <UpdateStatusControl id={id as string} />
 

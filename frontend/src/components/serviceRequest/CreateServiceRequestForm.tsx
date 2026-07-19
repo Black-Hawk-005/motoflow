@@ -3,17 +3,20 @@ import { useState } from "react";
 
 import { useCreateServiceRequest } from "../../hooks/serviceRequest/useCreateServiceRequest";
 import { useVehicles } from "../../hooks/vehicle/useVehicles";
+import { extractErrorMessage } from "../../utils/error";
 
 export const CreateServiceRequestForm = () => {
   const {
     mutate: createSR,
     isPending: isCreatingSR,
     isError: isCreateSRError,
+    error: createSRError,
   } = useCreateServiceRequest();
   const {
     data: vehicles,
     isLoading: isVLoading,
     isError: isVListError,
+    error: vListError,
   } = useVehicles();
 
   const [selectedVehicleId, setSelectedVehicleId] = useState<string>("");
@@ -52,7 +55,7 @@ export const CreateServiceRequestForm = () => {
           ))}
         </select>
       )}
-      {isVListError && <p>Failed to fetch vehicle list</p>}
+      {isVListError && <p>{extractErrorMessage(vListError)}</p>}
 
       <label htmlFor="complaint-input">Complaint:</label>
       <textarea
@@ -65,7 +68,7 @@ export const CreateServiceRequestForm = () => {
         {isCreatingSR ? "Submitting..." : "Submit"}
       </button>
 
-      {isCreateSRError && <p>Failed to create service request</p>}
+      {isCreateSRError && <p>{extractErrorMessage(createSRError)}</p>}
     </form>
   );
 };

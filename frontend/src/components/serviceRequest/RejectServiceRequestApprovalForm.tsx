@@ -1,5 +1,6 @@
 import { useState, type SubmitEvent } from "react";
 import { useRejectServiceRequest } from "../../hooks/serviceRequest/useRejectServiceRequest";
+import { extractErrorMessage } from "../../utils/error";
 
 interface RejectServiceRequestApprovalFormProps {
   id: string;
@@ -13,6 +14,7 @@ export const RejectServiceRequestApprovalForm = (
     mutate: rejectSR,
     isPending: isRejectingSR,
     isError: isRejectSRError,
+    error: rejectSRError,
   } = useRejectServiceRequest();
   const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -35,7 +37,7 @@ export const RejectServiceRequestApprovalForm = (
       <button type="submit" disabled={isRejectingSR || !message.trim()}>
         Reject
       </button>
-      {isRejectSRError && <p>Failed to reject</p>}
+      {isRejectSRError && <p>{extractErrorMessage(rejectSRError)}</p>}
     </form>
   );
 };

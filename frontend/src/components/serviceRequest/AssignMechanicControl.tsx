@@ -2,6 +2,7 @@ import { useState, type SubmitEvent } from "react";
 import { useUsers } from "../../hooks/admin/useUsers";
 import { useUpdateServiceRequest } from "../../hooks/serviceRequest/useUpdateServiceRequest";
 import type { ServiceStatus } from "../../types/serviceRequest";
+import { extractErrorMessage } from "../../utils/error";
 
 interface AssignMechanicControlProps {
   serviceRequestId: string;
@@ -16,12 +17,14 @@ export const AssignMechanicControl = (props: AssignMechanicControlProps) => {
     mutate: updateServiceRequest,
     isPending: isUpdateSRPending,
     isError: isUpdateSRError,
+    error: updateSRError,
   } = useUpdateServiceRequest();
 
   const {
     data: mechanics,
     isLoading: isMechLoading,
     isError: isMechError,
+    error: mechError,
   } = useUsers("mechanic");
 
   const handleAssignment = (e: SubmitEvent<HTMLFormElement>) => {
@@ -62,8 +65,8 @@ export const AssignMechanicControl = (props: AssignMechanicControlProps) => {
         <button type="submit">Assign</button>
       </form>
       {isUpdateSRPending && <p>Assigning mechanic...</p>}
-      {isUpdateSRError && <p>Unable to assign mechanic</p>}
-      {isMechError && <p>Unable to load mechanics list</p>}
+      {isUpdateSRError && <p>{extractErrorMessage(updateSRError)}</p>}
+      {isMechError && <p>{extractErrorMessage(mechError)}</p>}
     </div>
   );
 };

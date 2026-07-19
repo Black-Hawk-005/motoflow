@@ -2,6 +2,7 @@ import { useMe } from "../../hooks/auth/useMe";
 import { useServiceRequest } from "../../hooks/serviceRequest/useServiceRequest";
 import { useUpdateServiceRequest } from "../../hooks/serviceRequest/useUpdateServiceRequest";
 import type { ServiceStatus } from "../../types/serviceRequest";
+import { extractErrorMessage } from "../../utils/error";
 
 export interface UpdateStatusControlProps {
   id: string;
@@ -23,6 +24,7 @@ export const UpdateStatusControl = (props: UpdateStatusControlProps) => {
     mutate: updateServiceRequest,
     isPending: isUpdateSRPending,
     isError: isUpdateSRError,
+    error: updateSRError,
   } = useUpdateServiceRequest();
   const { data: serviceRequest, isLoading: isSRLoading } = useServiceRequest(
     props.id,
@@ -49,7 +51,7 @@ export const UpdateStatusControl = (props: UpdateStatusControlProps) => {
           Mark as {status}
         </button>
       ))}
-      {isUpdateSRError && <p>Failed to update status</p>}
+      {isUpdateSRError && <p>{extractErrorMessage(updateSRError)}</p>}
     </>
   );
 };

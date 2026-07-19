@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { SubmitEvent } from "react";
 
 import { useCreateComment } from "../../hooks/comment/useCreateComment";
+import { extractErrorMessage } from "../../utils/error";
 
 interface CreateCommentFormProps {
   id: string;
@@ -12,6 +13,7 @@ export const CreateCommentForm = ({ id }: CreateCommentFormProps) => {
     mutate: createComment,
     isPending: isCPending,
     isError: isCError,
+    error: createCommentError,
   } = useCreateComment();
 
   const [message, setMessage] = useState("");
@@ -42,7 +44,7 @@ export const CreateCommentForm = ({ id }: CreateCommentFormProps) => {
         Send
       </button>
       {isCPending && <p>Loading...</p>}
-      {isCError && <p>Failed to add comment</p>}
+      {isCError && <p>{extractErrorMessage(createCommentError)}</p>}
     </form>
   );
 };

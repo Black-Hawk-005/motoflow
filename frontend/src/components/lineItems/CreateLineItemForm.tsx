@@ -40,29 +40,39 @@ export const CreateLineItemForm = (props: CreateLineItemProps) => {
   };
 
   return (
-    <>
-      <h4>Create Line Item:</h4>
-      <form onSubmit={(e) => handleSubmit(e)}>
-        <label htmlFor="line-item-description-input">Description</label>
-        <textarea
-          id="line-item-description-input"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        ></textarea>
+    <div className="border-t border-slate-100 pt-4">
+      <h4 className="field-label">Add Line Item</h4>
+      <form onSubmit={(e) => handleSubmit(e)} className="flex flex-wrap items-end gap-3">
+        <div className="flex-1">
+          <label htmlFor="line-item-description-input" className="field-label">
+            Description
+          </label>
+          <textarea
+            id="line-item-description-input"
+            className="field-input"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          ></textarea>
+        </div>
 
-        <label htmlFor="line-item-cost-input">Cost</label>
-        <input
-          id="line-item-cost-input"
-          type="number"
-          value={cost}
-          onChange={(e) => setCost(e.target.value)}
-        ></input>
+        <div className="w-28">
+          <label htmlFor="line-item-cost-input" className="field-label">
+            Cost
+          </label>
+          <input
+            id="line-item-cost-input"
+            type="number"
+            className="field-input"
+            value={cost}
+            onChange={(e) => setCost(e.target.value)}
+          ></input>
+        </div>
 
-        <button disabled={isLIPending} type="submit">
-          Create
+        <button className="btn-primary" disabled={isLIPending} type="submit">
+          Add
         </button>
       </form>
-      {isLIError && <p>{extractErrorMessage(createLIError)}</p>}
-    </>
+      {isLIError && <p className="error-text mt-2">{extractErrorMessage(createLIError)}</p>}
+    </div>
   );
 };

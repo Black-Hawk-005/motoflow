@@ -46,23 +46,26 @@ export const LineItemEditForm = (props: LineItemEditFormProps) => {
     <form
       id={`line-item-${props.lineItem.id}`}
       onSubmit={(e) => handleLineItemUpdate(e, props.lineItem.id)}
+      className="flex flex-wrap items-center gap-2"
     >
       <input
         type="text"
+        className="field-input flex-1"
         value={draftDescription}
         onChange={(e) => setDraftDescription(e.target.value)}
       />
       <input
         type="text"
+        className="field-input w-24"
         value={draftCost}
         onChange={(e) => setDraftCost(e.target.value)}
       />
-      <button type="submit" disabled={isULPending}>
+      <button type="submit" className="btn-secondary" disabled={isULPending}>
         Update
       </button>
-      {isULError && <p>{extractErrorMessage(updateLIError)}</p>}
       <button
         type="button"
+        className="btn-danger"
         disabled={isDLPending}
         onClick={() =>
           deleteLI({
@@ -73,7 +76,8 @@ export const LineItemEditForm = (props: LineItemEditFormProps) => {
       >
         Delete
       </button>
-      {isDLError && <p>{extractErrorMessage(deleteLIError)}</p>}
+      {isULError && <p className="error-text w-full">{extractErrorMessage(updateLIError)}</p>}
+      {isDLError && <p className="error-text w-full">{extractErrorMessage(deleteLIError)}</p>}
     </form>
   );
 };

@@ -32,19 +32,19 @@ export const CreateCommentForm = ({ id }: CreateCommentFormProps) => {
   };
 
   return (
-    <form onSubmit={(e) => handleSubmit(e)}>
-      <label htmlFor="message-input">Message: </label>
+    <form onSubmit={(e) => handleSubmit(e)} className="mt-3 flex items-center gap-3">
       <input
         id="message-input"
+        placeholder="Write a message..."
+        className="field-input"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         type="text"
       />
-      <button type="submit" disabled={isCPending}>
-        Send
+      <button type="submit" className="btn-primary shrink-0" disabled={isCPending}>
+        {isCPending ? "Sending..." : "Send"}
       </button>
-      {isCPending && <p>Loading...</p>}
-      {isCError && <p>{extractErrorMessage(createCommentError)}</p>}
+      {isCError && <p className="error-text">{extractErrorMessage(createCommentError)}</p>}
     </form>
   );
 };

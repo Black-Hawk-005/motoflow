@@ -4,12 +4,21 @@ import { ServiceRequestList } from "../components/serviceRequest/ServiceRequestL
 
 export const AdminPage = () => {
   return (
-    <>
-      <h1>Admin</h1>
-      <CreateUserForm />
-      <UsersList />
+    <div className="space-y-8">
+      <h1 className="page-title">Admin</h1>
 
-      <ServiceRequestList />
-    </>
+      <section className="card space-y-4">
+        <h2 className="section-title">Create User</h2>
+        <CreateUserForm />
+      </section>
+
+      <section className="card">
+        <UsersList />
+      </section>
+
+      <section className="card">
+        <ServiceRequestList />
+      </section>
+    </div>
   );
 };

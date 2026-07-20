@@ -36,55 +36,86 @@ export const CreateUserForm = () => {
   };
 
   return (
-    <form onSubmit={(e) => handleSubmit(e)}>
-      <label htmlFor="full-name-input">Full Name:</label>
-      <input
-        id="full-name-input"
-        type="text"
-        value={full_name}
-        onChange={(e) => setFullName(e.target.value)}
-      />
+    <form
+      onSubmit={(e) => handleSubmit(e)}
+      className="grid grid-cols-2 gap-4 sm:grid-cols-5"
+    >
+      <div>
+        <label htmlFor="full-name-input" className="field-label">
+          Full Name
+        </label>
+        <input
+          id="full-name-input"
+          type="text"
+          className="field-input"
+          value={full_name}
+          onChange={(e) => setFullName(e.target.value)}
+        />
+      </div>
 
-      <label htmlFor="email-input">Email:</label>
-      <input
-        id="email-input"
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
+      <div>
+        <label htmlFor="email-input" className="field-label">
+          Email
+        </label>
+        <input
+          id="email-input"
+          type="email"
+          className="field-input"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </div>
 
-      <label htmlFor="password-input">Password:</label>
-      <input
-        id="password-input"
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+      <div>
+        <label htmlFor="password-input" className="field-label">
+          Password
+        </label>
+        <input
+          id="password-input"
+          type="password"
+          className="field-input"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </div>
 
-      <label htmlFor="phone-input">Phone:</label>
-      <input
-        id="phone-input"
-        type="text"
-        value={phone}
-        onChange={(e) => setPhone(e.target.value)}
-      />
+      <div>
+        <label htmlFor="phone-input" className="field-label">
+          Phone
+        </label>
+        <input
+          id="phone-input"
+          type="text"
+          className="field-input"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+        />
+      </div>
 
-      <label htmlFor="role-select">Role:</label>
-      <select
-        id="role-select"
-        value={role}
-        onChange={(e) => setRole(e.target.value as User["role"])}
-      >
-        <option value="mechanic">Mechanic</option>
-        <option value="admin">Admin</option>
-        <option value="customer">Customer</option>
-      </select>
+      <div>
+        <label htmlFor="role-select" className="field-label">
+          Role
+        </label>
+        <select
+          id="role-select"
+          className="field-input"
+          value={role}
+          onChange={(e) => setRole(e.target.value as User["role"])}
+        >
+          <option value="mechanic">Mechanic</option>
+          <option value="admin">Admin</option>
+          <option value="customer">Customer</option>
+        </select>
+      </div>
 
-      <button type="submit" disabled={isCreatePending}>
-        {isCreatePending ? "Creating..." : "Create User"}
-      </button>
-
-      {isCreateError && <p>{extractErrorMessage(createUserError)}</p>}
+      <div className="col-span-2 flex items-end gap-3 sm:col-span-5">
+        <button type="submit" className="btn-primary" disabled={isCreatePending}>
+          {isCreatePending ? "Creating..." : "Create User"}
+        </button>
+        {isCreateError && (
+          <p className="error-text">{extractErrorMessage(createUserError)}</p>
+        )}
+      </div>
     </form>
   );
 };

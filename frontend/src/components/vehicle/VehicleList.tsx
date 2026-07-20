@@ -10,17 +10,26 @@ export const VehicleList = () => {
   } = useVehicles();
   return (
     <div id="vehicle-list">
-      <h2>Vehicles</h2>
-      {isVLoading && <p>Loading...</p>}
+      <h2 className="section-title mb-3">Vehicles</h2>
+      {isVLoading && <p className="helper-text">Loading...</p>}
 
-      {isListError && <p>{extractErrorMessage(vehiclesError)}</p>}
+      {isListError && <p className="error-text">{extractErrorMessage(vehiclesError)}</p>}
 
-      {vehicles?.map((vehicle) => (
-        <div key={vehicle.id}>
-          {vehicle.make} - {vehicle.model}({vehicle.year}){" "}
-          {vehicle.license_plate}
-        </div>
-      ))}
+      {!isVLoading && vehicles?.length === 0 && (
+        <p className="helper-text">No vehicles yet.</p>
+      )}
+
+      <ul className="divide-y divide-slate-100">
+        {vehicles?.map((vehicle) => (
+          <li key={vehicle.id} className="py-2 text-sm text-slate-700">
+            <span className="font-medium">
+              {vehicle.make} {vehicle.model}
+            </span>{" "}
+            <span className="text-slate-400">({vehicle.year})</span>{" "}
+            <span className="text-slate-500">{vehicle.license_plate}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

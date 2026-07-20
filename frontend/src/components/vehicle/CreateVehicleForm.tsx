@@ -33,41 +33,67 @@ export const CreateVehicleForm = () => {
   };
 
   return (
-    <form onSubmit={(e) => handleSubmit(e)}>
-      <label htmlFor="make-input">Make:</label>
-      <input
-        id="make-input"
-        type="text"
-        value={make}
-        onChange={(e) => setMake(e.target.value)}
-      />
-      <label htmlFor="model-input">Model:</label>
-      <input
-        id="model-input"
-        type="text"
-        value={model}
-        onChange={(e) => setModel(e.target.value)}
-      />
-      <label htmlFor="year-input">Year:</label>
-      <input
-        id="year-input"
-        type="number"
-        value={year}
-        onChange={(e) => setYear(Number(e.target.value))}
-      />
-      <label htmlFor="license-plate-input">License Plate:</label>
-      <input
-        id="license-plate-input"
-        value={license_plate}
-        type="text"
-        onChange={(e) => setLicensePlate(e.target.value)}
-      />
+    <form
+      onSubmit={(e) => handleSubmit(e)}
+      className="grid grid-cols-2 gap-4 border-t border-slate-100 pt-4 sm:grid-cols-4"
+    >
+      <div>
+        <label htmlFor="make-input" className="field-label">
+          Make
+        </label>
+        <input
+          id="make-input"
+          type="text"
+          className="field-input"
+          value={make}
+          onChange={(e) => setMake(e.target.value)}
+        />
+      </div>
+      <div>
+        <label htmlFor="model-input" className="field-label">
+          Model
+        </label>
+        <input
+          id="model-input"
+          type="text"
+          className="field-input"
+          value={model}
+          onChange={(e) => setModel(e.target.value)}
+        />
+      </div>
+      <div>
+        <label htmlFor="year-input" className="field-label">
+          Year
+        </label>
+        <input
+          id="year-input"
+          type="number"
+          className="field-input"
+          value={year}
+          onChange={(e) => setYear(Number(e.target.value))}
+        />
+      </div>
+      <div>
+        <label htmlFor="license-plate-input" className="field-label">
+          License Plate
+        </label>
+        <input
+          id="license-plate-input"
+          value={license_plate}
+          type="text"
+          className="field-input"
+          onChange={(e) => setLicensePlate(e.target.value)}
+        />
+      </div>
 
-      <button type="submit" disabled={isVPending}>
-        {isVPending ? "Adding..." : "Submit"}
-      </button>
-
-      {isCreateError && <p>{extractErrorMessage(createVehicleError)}</p>}
+      <div className="col-span-2 flex items-end gap-3 sm:col-span-4">
+        <button type="submit" className="btn-primary" disabled={isVPending}>
+          {isVPending ? "Adding..." : "Add Vehicle"}
+        </button>
+        {isCreateError && (
+          <p className="error-text">{extractErrorMessage(createVehicleError)}</p>
+        )}
+      </div>
     </form>
   );
 };

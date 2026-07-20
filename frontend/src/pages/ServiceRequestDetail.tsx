@@ -13,6 +13,7 @@ import { RejectServiceRequestApprovalForm } from "../components/serviceRequest/R
 import { AssignMechanicControl } from "../components/serviceRequest/AssignMechanicControl";
 import type { ServiceStatus } from "../types/serviceRequest";
 import { extractErrorMessage } from "../utils/error";
+import { StatusBadge } from "../components/common/StatusBadge";
 
 const ServiceRequestDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -28,53 +29,72 @@ const ServiceRequestDetail = () => {
   } = useApproveServiceRequest();
 
   if (isSRLoading || isRoleLoading) {
-    return <p>Loading...</p>;
+    return <p className="helper-text">Loading...</p>;
   }
 
   return (
-    <>
-      <h1>Service Request Details</h1>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="page-title">Service Request Details</h1>
+        {serviceRequest && <StatusBadge status={serviceRequest.status} />}
+      </div>
 
-      <h2>Status: {serviceRequest?.status}</h2>
-      {user?.role === "customer" &&
-        serviceRequest?.status === "action_required" && (
-          <button
-            disabled={isApprovingSR}
-            onClick={() => approveSR(serviceRequest.id)}
-          >
-            Approve
-          </button>
+      <div className="card space-y-2">
+        <p className="text-slate-700">{serviceRequest?.initial_complaint}</p>
+        <p className="helper-text">
+          Created at: {serviceRequest?.created_at}
+        </p>
+        {user?.role === "admin" && (
+          <p className="helper-text">
+            Assigned mechanic id: {serviceRequest?.mechanic_id ?? "—"}
+          </p>
         )}
-      {user?.role === "admin" && (
-        <AssignMechanicControl
-          serviceRequestId={serviceRequest?.id as string}
-          mechanicId={serviceRequest?.mechanic_id as string}
-          status={serviceRequest?.status as ServiceStatus}
-        />
-      )}
+      </div>
 
-      {user?.role === "customer" &&
-        serviceRequest?.status === "action_required" && (
-          <RejectServiceRequestApprovalForm id={id as string} />
+      <div className="card space-y-4">
+        <div className="flex flex-wrap items-center gap-3">
+          {user?.role === "customer" &&
+            serviceRequest?.status === "action_required" && (
+              <button
+                className="btn-primary"
+                disabled={isApprovingSR}
+                onClick={() => approveSR(serviceRequest.id)}
+              >
+                Approve
+              </button>
+            )}
+          <UpdateStatusControl id={id as string} />
+        </div>
+
+        {user?.role === "admin" && (
+          <AssignMechanicControl
+            serviceRequestId={serviceRequest?.id as string}
+            mechanicId={serviceRequest?.mechanic_id as string}
+            status={serviceRequest?.status as ServiceStatus}
+          />
         )}
 
-      {isApproveSRError && <p>{extractErrorMessage(approveSRError)}</p>}
+        {user?.role === "customer" &&
+          serviceRequest?.status === "action_required" && (
+            <RejectServiceRequestApprovalForm id={id as string} />
+          )}
 
-      <UpdateStatusControl id={id as string} />
+        {isApproveSRError && (
+          <p className="error-text">{extractErrorMessage(approveSRError)}</p>
+        )}
+      </div>
 
-      <p>Initial Complaint</p>
-      <p>{serviceRequest?.initial_complaint}</p>
-      <p>Created at: {serviceRequest?.created_at}</p>
-      {user?.role === "admin" && (
-        <p>Assigned mechanic id: {serviceRequest?.mechanic_id}</p>
-      )}
-      <LineItemsList id={id as string} />
-      <CreateLineItemForm id={id as string} />
+      <div className="card space-y-2">
+        <LineItemsList id={id as string} />
+        <CreateLineItemForm id={id as string} />
+      </div>
 
-      <h3>Messages:</h3>
-      <CommentList id={id as string} />
-      <CreateCommentForm id={id as string} />
-    </>
+      <div className="card">
+        <h3 className="section-title mb-3">Messages</h3>
+        <CommentList id={id as string} />
+        <CreateCommentForm id={id as string} />
+      </div>
+    </div>
   );
 };
 

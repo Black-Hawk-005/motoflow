@@ -45,11 +45,12 @@ export const AssignMechanicControl = (props: AssignMechanicControlProps) => {
 
   return (
     <div>
-      <p>Assign mechanic</p>
-      {isMechLoading && <p>Loading mechanics list</p>}
+      <p className="field-label">Assign mechanic</p>
+      {isMechLoading && <p className="helper-text">Loading mechanics list</p>}
 
-      <form onSubmit={(e) => handleAssignment(e)}>
+      <form onSubmit={(e) => handleAssignment(e)} className="flex items-center gap-3">
         <select
+          className="field-input"
           value={mechanicId}
           onChange={(e) => setMechanicId(e.target.value)}
         >
@@ -62,11 +63,13 @@ export const AssignMechanicControl = (props: AssignMechanicControlProps) => {
             </option>
           ))}
         </select>
-        <button type="submit">Assign</button>
+        <button type="submit" className="btn-primary shrink-0">
+          Assign
+        </button>
       </form>
-      {isUpdateSRPending && <p>Assigning mechanic...</p>}
-      {isUpdateSRError && <p>{extractErrorMessage(updateSRError)}</p>}
-      {isMechError && <p>{extractErrorMessage(mechError)}</p>}
+      {isUpdateSRPending && <p className="helper-text">Assigning mechanic...</p>}
+      {isUpdateSRError && <p className="error-text">{extractErrorMessage(updateSRError)}</p>}
+      {isMechError && <p className="error-text">{extractErrorMessage(mechError)}</p>}
     </div>
   );
 };

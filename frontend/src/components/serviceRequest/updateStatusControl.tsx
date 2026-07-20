@@ -39,19 +39,20 @@ export const UpdateStatusControl = (props: UpdateStatusControlProps) => {
   }
 
   return (
-    <>
+    <div className="flex flex-wrap items-center gap-2">
       {VALID_TRANSITIONS[serviceRequest.status].map((status) => (
         <button
           key={status}
+          className="btn-secondary capitalize"
           disabled={isUpdateSRPending}
           onClick={() =>
             updateServiceRequest({ id: props.id, payload: { status } })
           }
         >
-          Mark as {status}
+          Mark as {status.replace("_", " ")}
         </button>
       ))}
-      {isUpdateSRError && <p>{extractErrorMessage(updateSRError)}</p>}
-    </>
+      {isUpdateSRError && <p className="error-text">{extractErrorMessage(updateSRError)}</p>}
+    </div>
   );
 };

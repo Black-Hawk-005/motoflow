@@ -36,39 +36,59 @@ export const CreateServiceRequestForm = () => {
   };
 
   return (
-    <form onSubmit={(e) => handleCreateSR(e)}>
-      <label htmlFor="vehicle-select">Vehicle:</label>
-      {isVLoading && <p>Vehicle list loading</p>}
-      {!isVLoading && (
-        <select
-          id="vehicle-select"
-          value={selectedVehicleId}
-          onChange={(e) => setSelectedVehicleId(e.target.value)}
-        >
-          <option value="" disabled>
-            Select a vehicle
-          </option>
-          {vehicles?.map((vehicle) => (
-            <option key={vehicle.id} value={vehicle.id}>
-              {vehicle.make} {vehicle.model} ({vehicle.license_plate})
+    <form
+      onSubmit={(e) => handleCreateSR(e)}
+      className="space-y-4 border-t border-slate-100 pt-4"
+    >
+      <div>
+        <label htmlFor="vehicle-select" className="field-label">
+          Vehicle
+        </label>
+        {isVLoading && <p className="helper-text">Vehicle list loading</p>}
+        {!isVLoading && (
+          <select
+            id="vehicle-select"
+            className="field-input"
+            value={selectedVehicleId}
+            onChange={(e) => setSelectedVehicleId(e.target.value)}
+          >
+            <option value="" disabled>
+              Select a vehicle
             </option>
-          ))}
-        </select>
-      )}
-      {isVListError && <p>{extractErrorMessage(vListError)}</p>}
+            {vehicles?.map((vehicle) => (
+              <option key={vehicle.id} value={vehicle.id}>
+                {vehicle.make} {vehicle.model} ({vehicle.license_plate})
+              </option>
+            ))}
+          </select>
+        )}
+        {isVListError && <p className="error-text">{extractErrorMessage(vListError)}</p>}
+      </div>
 
-      <label htmlFor="complaint-input">Complaint:</label>
-      <textarea
-        id="complaint-input"
-        value={complaint}
-        onChange={(e) => setComplaint(e.target.value)}
-      />
+      <div>
+        <label htmlFor="complaint-input" className="field-label">
+          Complaint
+        </label>
+        <textarea
+          id="complaint-input"
+          className="field-input"
+          value={complaint}
+          onChange={(e) => setComplaint(e.target.value)}
+        />
+      </div>
 
-      <button type="submit" disabled={isCreatingSR || !selectedVehicleId}>
-        {isCreatingSR ? "Submitting..." : "Submit"}
-      </button>
-
-      {isCreateSRError && <p>{extractErrorMessage(createSRError)}</p>}
+      <div className="flex items-center gap-3">
+        <button
+          type="submit"
+          className="btn-primary"
+          disabled={isCreatingSR || !selectedVehicleId}
+        >
+          {isCreatingSR ? "Submitting..." : "Create Service Request"}
+        </button>
+        {isCreateSRError && (
+          <p className="error-text">{extractErrorMessage(createSRError)}</p>
+        )}
+      </div>
     </form>
   );
 };

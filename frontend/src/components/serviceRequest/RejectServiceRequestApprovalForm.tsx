@@ -28,16 +28,22 @@ export const RejectServiceRequestApprovalForm = (
   };
 
   return (
-    <form onSubmit={(e) => handleSubmit(e)}>
+    <form onSubmit={(e) => handleSubmit(e)} className="flex items-start gap-3">
       <input
         type="text"
+        placeholder="Reason for rejection"
+        className="field-input"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
       />
-      <button type="submit" disabled={isRejectingSR || !message.trim()}>
+      <button
+        type="submit"
+        className="btn-danger shrink-0"
+        disabled={isRejectingSR || !message.trim()}
+      >
         Reject
       </button>
-      {isRejectSRError && <p>{extractErrorMessage(rejectSRError)}</p>}
+      {isRejectSRError && <p className="error-text">{extractErrorMessage(rejectSRError)}</p>}
     </form>
   );
 };

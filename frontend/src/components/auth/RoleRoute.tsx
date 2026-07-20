@@ -9,11 +9,14 @@ interface RoleRouteProps {
 
 export const RoleRoute = ({ allowedRoles }: RoleRouteProps) => {
   const { data, isLoading } = useMe();
-  return (
-    <>
-      {isLoading && <p>Loading...</p>}
-      {data && allowedRoles.includes(data?.role) && <Outlet />}
-      {!isLoading && !data && <Navigate to="/dashboard" />}
-    </>
-  );
+
+  if (isLoading) {
+    return <p className="helper-text">Loading...</p>;
+  }
+
+  if (!data || !allowedRoles.includes(data.role)) {
+    return <Navigate to="/dashboard" />;
+  }
+
+  return <Outlet />;
 };

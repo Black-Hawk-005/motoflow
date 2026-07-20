@@ -5,20 +5,18 @@ import { CreateServiceRequestForm } from "../components/serviceRequest/CreateSer
 
 export const CustomerPage = () => {
   return (
-    <>
-      <h1>Customer</h1>
+    <div className="space-y-8">
+      <h1 className="page-title">Customer</h1>
 
-      {/* Vehicle section */}
-      <VehicleList />
+      <section className="card space-y-4">
+        <VehicleList />
+        <CreateVehicleForm />
+      </section>
 
-      {/* Add vehicle section */}
-      <CreateVehicleForm />
-
-      {/* Service request section */}
-      <ServiceRequestList />
-
-      {/* Create service request form */}
-      <CreateServiceRequestForm />
-    </>
+      <section className="card space-y-4">
+        <ServiceRequestList />
+        <CreateServiceRequestForm />
+      </section>
+    </div>
   );
 };

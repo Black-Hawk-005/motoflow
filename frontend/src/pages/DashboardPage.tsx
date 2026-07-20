@@ -11,11 +11,11 @@ export const DashboardPage = () => {
     else if (data.role === "mechanic") navigate("/mechanic");
     else if (data.role === "admin") navigate("/admin");
     else navigate("/login");
-  }, [data, navigate]);
+  }, [data]);
   return (
     <>
-      {isLoading && <p>Loading...</p>}
-      {isError && <p>Something went wrong</p>}
+      {isLoading && <p className="helper-text">Loading...</p>}
+      {isError && <p className="error-text">Something went wrong</p>}
     </>
   );
 };

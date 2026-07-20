@@ -2,9 +2,11 @@ import { ServiceRequestList } from "../components/serviceRequest/ServiceRequestL
 
 export const MechanicPage = () => {
   return (
-    <>
-      <h1>Welcome </h1>
-      <ServiceRequestList />
-    </>
+    <div className="space-y-8">
+      <h1 className="page-title">My Assigned Requests</h1>
+      <section className="card">
+        <ServiceRequestList />
+      </section>
+    </div>
   );
 };

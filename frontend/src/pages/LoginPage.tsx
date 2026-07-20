@@ -20,27 +20,42 @@ export const LoginPage = () => {
   };
 
   return (
-    <>
-      <form onSubmit={(e) => handleSubmit(e)}>
-        <label htmlFor="email-input">Email:</label>
-        <input
-          id="email-input"
-          type="email"
-          onChange={(e) => setEmail(e.target.value)}
-          value={email}
-        ></input>
-        <label htmlFor="password-input">Password:</label>
-        <input
-          id="password-input"
-          type="password"
-          onChange={(e) => setPassword(e.target.value)}
-          value={password}
-        ></input>
-        <button type="submit" disabled={isPending}>
-          {isPending ? "Logging in..." : "Login"}
-        </button>
-        {isError && <p>{extractErrorMessage(error)}</p>}
-      </form>
-    </>
+    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
+      <div className="w-full max-w-sm">
+        <h1 className="mb-6 text-center text-2xl font-semibold text-indigo-600">
+          MotoFlow
+        </h1>
+        <form onSubmit={(e) => handleSubmit(e)} className="card space-y-4">
+          <div>
+            <label htmlFor="email-input" className="field-label">
+              Email
+            </label>
+            <input
+              id="email-input"
+              type="email"
+              className="field-input"
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
+            ></input>
+          </div>
+          <div>
+            <label htmlFor="password-input" className="field-label">
+              Password
+            </label>
+            <input
+              id="password-input"
+              type="password"
+              className="field-input"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+            ></input>
+          </div>
+          <button type="submit" className="btn-primary w-full" disabled={isPending}>
+            {isPending ? "Logging in..." : "Login"}
+          </button>
+          {isError && <p className="error-text">{extractErrorMessage(error)}</p>}
+        </form>
+      </div>
+    </div>
   );
 };

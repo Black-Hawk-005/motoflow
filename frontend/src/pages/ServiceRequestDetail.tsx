@@ -14,6 +14,7 @@ import { AssignMechanicControl } from "../components/serviceRequest/AssignMechan
 import type { ServiceStatus } from "../types/serviceRequest";
 import { extractErrorMessage } from "../utils/error";
 import { StatusBadge } from "../components/common/StatusBadge";
+import { VALID_TRANSITIONS } from "../components/serviceRequest/updateStatusControl";
 
 const ServiceRequestDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -28,6 +29,16 @@ const ServiceRequestDetail = () => {
     error: approveSRError,
   } = useApproveServiceRequest();
 
+  const canApproveOrReject =
+    user?.role === "customer" && serviceRequest?.status === "action_required";
+  const canUpdateStatus =
+    (user?.role === "mechanic" || user?.role === "admin") &&
+    !!serviceRequest &&
+    VALID_TRANSITIONS[serviceRequest.status].length > 0;
+  const canAssignMechanic = user?.role === "admin";
+
+  const hasActions = canApproveOrReject || canUpdateStatus || canAssignMechanic;
+
   if (isSRLoading || isRoleLoading) {
     return <p className="helper-text">Loading...</p>;
   }
@@ -41,9 +52,7 @@ const ServiceRequestDetail = () => {
 
       <div className="card space-y-2">
         <p className="text-slate-700">{serviceRequest?.initial_complaint}</p>
-        <p className="helper-text">
-          Created at: {serviceRequest?.created_at}
-        </p>
+        <p className="helper-text">Created at: {serviceRequest?.created_at}</p>
         {user?.role === "admin" && (
           <p className="helper-text">
             Assigned mechanic id: {serviceRequest?.mechanic_id ?? "—"}
@@ -51,38 +60,40 @@ const ServiceRequestDetail = () => {
         )}
       </div>
 
-      <div className="card space-y-4">
-        <div className="flex flex-wrap items-center gap-3">
-          {user?.role === "customer" &&
-            serviceRequest?.status === "action_required" && (
-              <button
-                className="btn-primary"
-                disabled={isApprovingSR}
-                onClick={() => approveSR(serviceRequest.id)}
-              >
-                Approve
-              </button>
-            )}
-          <UpdateStatusControl id={id as string} />
-        </div>
+      {hasActions && (
+        <div className="card space-y-4">
+          <div className="flex flex-wrap items-center gap-3">
+            {user?.role === "customer" &&
+              serviceRequest?.status === "action_required" && (
+                <button
+                  className="btn-primary"
+                  disabled={isApprovingSR}
+                  onClick={() => approveSR(serviceRequest.id)}
+                >
+                  Approve
+                </button>
+              )}
+            <UpdateStatusControl id={id as string} />
+          </div>
 
-        {user?.role === "admin" && (
-          <AssignMechanicControl
-            serviceRequestId={serviceRequest?.id as string}
-            mechanicId={serviceRequest?.mechanic_id as string}
-            status={serviceRequest?.status as ServiceStatus}
-          />
-        )}
-
-        {user?.role === "customer" &&
-          serviceRequest?.status === "action_required" && (
-            <RejectServiceRequestApprovalForm id={id as string} />
+          {user?.role === "admin" && (
+            <AssignMechanicControl
+              serviceRequestId={serviceRequest?.id as string}
+              mechanicId={serviceRequest?.mechanic_id as string}
+              status={serviceRequest?.status as ServiceStatus}
+            />
           )}
 
-        {isApproveSRError && (
-          <p className="error-text">{extractErrorMessage(approveSRError)}</p>
-        )}
-      </div>
+          {user?.role === "customer" &&
+            serviceRequest?.status === "action_required" && (
+              <RejectServiceRequestApprovalForm id={id as string} />
+            )}
+
+          {isApproveSRError && (
+            <p className="error-text">{extractErrorMessage(approveSRError)}</p>
+          )}
+        </div>
+      )}
 
       <div className="card space-y-2">
         <LineItemsList id={id as string} />

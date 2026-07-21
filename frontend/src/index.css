@@ -60,6 +60,17 @@ body {
     @apply text-sm text-slate-800;
   }
 
+  /* Stat tiles (combine with .card in markup, e.g. className="card stat-tile") */
+  .stat-tile {
+    @apply flex flex-col gap-1;
+  }
+  .stat-tile-label {
+    @apply text-sm text-slate-500;
+  }
+  .stat-tile-value {
+    @apply text-3xl font-semibold text-slate-900;
+  }
+
   /* Tables */
   .table-base {
     @apply w-full text-left text-sm;

@@ -78,6 +78,13 @@ class ServiceRequestCreate(BaseModel):
     initial_complaint: str = Field(min_length=10)
 
 
+class AssignedMechanic(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    full_name: str
+
+
 class ServiceRequestRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -85,6 +92,7 @@ class ServiceRequestRead(BaseModel):
     customer_id: UUID
     vehicle_id: UUID
     mechanic_id: Optional[UUID]
+    mechanic: Optional[AssignedMechanic] = None
     initial_complaint: str
     status: ServiceStatus
     created_at: datetime

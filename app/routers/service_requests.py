@@ -10,6 +10,7 @@ from app import models
 from app.database import get_db
 from app.dependencies import get_current_user, require_customer, require_roles
 from app.schemas import (
+    AssignedMechanic,
     ServiceRequestCreate,
     ServiceRequestRead,
     ServiceRequestReject,
@@ -117,7 +118,26 @@ async def get_service_request(
             status_code=http_status.HTTP_404_NOT_FOUND, detail="Request not found"
         )
 
-    return request
+    mechanic = None
+    if request.mechanic_id:
+        mech_result = await db.execute(
+            select(models.User).where(models.User.id == request.mechanic_id)
+        )
+        mechanic_user = mech_result.scalar_one_or_none()
+        if mechanic_user:
+            mechanic = AssignedMechanic.model_validate(mechanic_user)
+
+    return ServiceRequestRead(
+        id=request.id,
+        customer_id=request.customer_id,
+        vehicle_id=request.vehicle_id,
+        mechanic_id=request.mechanic_id,
+        mechanic=mechanic,
+        initial_complaint=request.initial_complaint,
+        status=request.status,
+        created_at=request.created_at,
+        updated_at=request.updated_at,
+    )
 
 
 @router.patch(

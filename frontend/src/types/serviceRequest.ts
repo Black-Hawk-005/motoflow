@@ -13,6 +13,10 @@ export interface ServiceRequestResponse {
   vehicle_id: string;
   mechanic_id: string | null | undefined;
   mechanic: { id: string; full_name: string } | null | undefined;
+  customer:
+    | { id: string; full_name: string; email: string; phone: string }
+    | null
+    | undefined;
   initial_complaint: string;
   status: ServiceStatus;
   created_at: string;

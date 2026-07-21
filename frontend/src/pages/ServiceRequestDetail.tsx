@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 
 import { useServiceRequest } from "../hooks/serviceRequest/useServiceRequest";
+import { useVehicle } from "../hooks/vehicle/useVehicle";
 import { useMe } from "../hooks/auth/useMe";
 import { useApproveServiceRequest } from "../hooks/serviceRequest/useApproveServiceRequest";
 
@@ -16,11 +17,15 @@ import { extractErrorMessage } from "../utils/error";
 import { StatusBadge } from "../components/common/StatusBadge";
 import { VALID_TRANSITIONS } from "../components/serviceRequest/updateStatusControl";
 import { formatDateTime } from "../utils/date";
+import { VehicleList } from "../components/vehicle/VehicleList";
 
 const ServiceRequestDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { data: serviceRequest, isLoading: isSRLoading } = useServiceRequest(
     id as string,
+  );
+  const { data: vehicleDetails, isLoading: isVLoading } = useVehicle(
+    serviceRequest?.vehicle_id,
   );
   const { data: user, isLoading: isRoleLoading } = useMe();
   const {
@@ -57,12 +62,38 @@ const ServiceRequestDetail = () => {
           Created: {serviceRequest && formatDateTime(serviceRequest.created_at)}
         </p>
         <p className="helper-text">
-          Last updated: {serviceRequest && formatDateTime(serviceRequest.updated_at)}
+          Last updated:{" "}
+          {serviceRequest && formatDateTime(serviceRequest.updated_at)}
         </p>
         {(user?.role === "admin" || user?.role === "customer") && (
           <p className="helper-text">
-            Assigned mechanic: {serviceRequest?.mechanic?.full_name ?? "Unassigned"}
+            Assigned mechanic:{" "}
+            {serviceRequest?.mechanic?.full_name ?? "Unassigned"}
           </p>
+        )}
+        {(user?.role === "admin" || user?.role === "mechanic") &&
+          serviceRequest?.customer && (
+            <p className="helper-text">
+              Customer contact: {serviceRequest.customer.full_name} —{" "}
+              {serviceRequest.customer.phone} — {serviceRequest.customer.email}
+            </p>
+          )}
+      </div>
+
+      <div className="card space-y-2">
+        <h3 className="section-title mb-3">Vehicle Details</h3>
+        {isVLoading ? (
+          <p className="helper-text">Loading...</p>
+        ) : (
+          <>
+            <p className="helper-text">Make: {vehicleDetails?.make}</p>
+            <p className="helper-text">
+              Model: {vehicleDetails?.model} ({vehicleDetails?.year})
+            </p>
+            <p className="helper-text">
+              License Plate: {vehicleDetails?.license_plate}
+            </p>
+          </>
         )}
       </div>
 

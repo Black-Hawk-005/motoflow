@@ -11,6 +11,7 @@ from app.database import get_db
 from app.dependencies import get_current_user, require_customer, require_roles
 from app.schemas import (
     AssignedMechanic,
+    CustomerContact,
     ServiceRequestCreate,
     ServiceRequestRead,
     ServiceRequestReject,
@@ -113,6 +114,9 @@ async def get_service_request(
     if (
         current_user.role == UserRole.CUSTOMER
         and request.customer_id != current_user.id
+    ) or (
+        current_user.role == UserRole.MECHANIC
+        and request.mechanic_id != current_user.id
     ):
         raise HTTPException(
             status_code=http_status.HTTP_404_NOT_FOUND, detail="Request not found"
@@ -127,12 +131,22 @@ async def get_service_request(
         if mechanic_user:
             mechanic = AssignedMechanic.model_validate(mechanic_user)
 
+    customer = None
+    if current_user.role in (UserRole.MECHANIC, UserRole.ADMIN):
+        customer_result = await db.execute(
+            select(models.User).where(models.User.id == request.customer_id)
+        )
+        customer_user = customer_result.scalar_one_or_none()
+        if customer_user:
+            customer = CustomerContact.model_validate(customer_user)
+
     return ServiceRequestRead(
         id=request.id,
         customer_id=request.customer_id,
         vehicle_id=request.vehicle_id,
         mechanic_id=request.mechanic_id,
         mechanic=mechanic,
+        customer=customer,
         initial_complaint=request.initial_complaint,
         status=request.status,
         created_at=request.created_at,

@@ -17,7 +17,6 @@ import { extractErrorMessage } from "../utils/error";
 import { StatusBadge } from "../components/common/StatusBadge";
 import { VALID_TRANSITIONS } from "../components/serviceRequest/updateStatusControl";
 import { formatDateTime } from "../utils/date";
-import { VehicleList } from "../components/vehicle/VehicleList";
 
 const ServiceRequestDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -56,44 +55,66 @@ const ServiceRequestDetail = () => {
         {serviceRequest && <StatusBadge status={serviceRequest.status} />}
       </div>
 
-      <div className="card space-y-2">
+      <div className="card space-y-4">
         <p className="text-slate-700">{serviceRequest?.initial_complaint}</p>
-        <p className="helper-text">
-          Created: {serviceRequest && formatDateTime(serviceRequest.created_at)}
-        </p>
-        <p className="helper-text">
-          Last updated:{" "}
-          {serviceRequest && formatDateTime(serviceRequest.updated_at)}
-        </p>
-        {(user?.role === "admin" || user?.role === "customer") && (
-          <p className="helper-text">
-            Assigned mechanic:{" "}
-            {serviceRequest?.mechanic?.full_name ?? "Unassigned"}
-          </p>
-        )}
-        {(user?.role === "admin" || user?.role === "mechanic") &&
-          serviceRequest?.customer && (
-            <p className="helper-text">
-              Customer contact: {serviceRequest.customer.full_name} —{" "}
-              {serviceRequest.customer.phone} — {serviceRequest.customer.email}
+        <div className="grid grid-cols-2 gap-4 border-t border-slate-100 pt-4 sm:grid-cols-3">
+          <div>
+            <p className="info-label">Created</p>
+            <p className="info-value">
+              {serviceRequest && formatDateTime(serviceRequest.created_at)}
             </p>
+          </div>
+          <div>
+            <p className="info-label">Last Updated</p>
+            <p className="info-value">
+              {serviceRequest && formatDateTime(serviceRequest.updated_at)}
+            </p>
+          </div>
+          {(user?.role === "admin" || user?.role === "customer") && (
+            <div>
+              <p className="info-label">Assigned Mechanic</p>
+              <p className="info-value">
+                {serviceRequest?.mechanic?.full_name ?? "Unassigned"}
+              </p>
+            </div>
           )}
+          {(user?.role === "admin" || user?.role === "mechanic") &&
+            serviceRequest?.customer && (
+              <div className="col-span-2 sm:col-span-3">
+                <p className="info-label">Customer Contact</p>
+                <p className="info-value">
+                  {serviceRequest.customer.full_name}
+                  <span className="mx-2 text-slate-300">·</span>
+                  {serviceRequest.customer.phone}
+                  <span className="mx-2 text-slate-300">·</span>
+                  {serviceRequest.customer.email}
+                </p>
+              </div>
+            )}
+        </div>
       </div>
 
-      <div className="card space-y-2">
-        <h3 className="section-title mb-3">Vehicle Details</h3>
+      <div className="card space-y-3">
+        <h3 className="section-title">Vehicle Details</h3>
         {isVLoading ? (
           <p className="helper-text">Loading...</p>
         ) : (
-          <>
-            <p className="helper-text">Make: {vehicleDetails?.make}</p>
-            <p className="helper-text">
-              Model: {vehicleDetails?.model} ({vehicleDetails?.year})
-            </p>
-            <p className="helper-text">
-              License Plate: {vehicleDetails?.license_plate}
-            </p>
-          </>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+            <div>
+              <p className="info-label">Make</p>
+              <p className="info-value">{vehicleDetails?.make}</p>
+            </div>
+            <div>
+              <p className="info-label">Model</p>
+              <p className="info-value">
+                {vehicleDetails?.model} ({vehicleDetails?.year})
+              </p>
+            </div>
+            <div>
+              <p className="info-label">License Plate</p>
+              <p className="info-value">{vehicleDetails?.license_plate}</p>
+            </div>
+          </div>
         )}
       </div>
 

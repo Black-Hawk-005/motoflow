@@ -52,6 +52,14 @@ body {
     @apply text-sm text-slate-500;
   }
 
+  /* Labeled info (for displaying data, not hints) */
+  .info-label {
+    @apply text-xs font-medium uppercase tracking-wide text-slate-400;
+  }
+  .info-value {
+    @apply text-sm text-slate-800;
+  }
+
   /* Tables */
   .table-base {
     @apply w-full text-left text-sm;

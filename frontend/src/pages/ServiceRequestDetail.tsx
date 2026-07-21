@@ -15,6 +15,7 @@ import type { ServiceStatus } from "../types/serviceRequest";
 import { extractErrorMessage } from "../utils/error";
 import { StatusBadge } from "../components/common/StatusBadge";
 import { VALID_TRANSITIONS } from "../components/serviceRequest/updateStatusControl";
+import { formatDateTime } from "../utils/date";
 
 const ServiceRequestDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -52,10 +53,15 @@ const ServiceRequestDetail = () => {
 
       <div className="card space-y-2">
         <p className="text-slate-700">{serviceRequest?.initial_complaint}</p>
-        <p className="helper-text">Created at: {serviceRequest?.created_at}</p>
-        {user?.role === "admin" && (
+        <p className="helper-text">
+          Created: {serviceRequest && formatDateTime(serviceRequest.created_at)}
+        </p>
+        <p className="helper-text">
+          Last updated: {serviceRequest && formatDateTime(serviceRequest.updated_at)}
+        </p>
+        {(user?.role === "admin" || user?.role === "customer") && (
           <p className="helper-text">
-            Assigned mechanic id: {serviceRequest?.mechanic_id ?? "—"}
+            Assigned mechanic: {serviceRequest?.mechanic?.full_name ?? "Unassigned"}
           </p>
         )}
       </div>

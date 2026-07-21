@@ -219,6 +219,14 @@ async def update_request(
             detail="Invalid status change",
         )
 
+    if update_data.get("status") == ServiceStatus.ASSIGNED and not update_data.get(
+        "mechanic_id", request.mechanic_id
+    ):
+        raise HTTPException(
+            status_code=http_status.HTTP_400_BAD_REQUEST,
+            detail="Cannot mark as assigned without a mechanic",
+        )
+
     for field, value in update_data.items():
         setattr(request, field, value)
 

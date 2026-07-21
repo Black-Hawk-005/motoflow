@@ -2,7 +2,7 @@ import { ServiceRequestList } from "../components/serviceRequest/ServiceRequestL
 
 export const MechanicPage = () => {
   return (
-    <div className="space-y-8">
+    <div className="space-y-5">
       <h1 className="page-title">My Assigned Requests</h1>
       <section className="card">
         <ServiceRequestList />

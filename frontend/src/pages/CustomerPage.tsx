@@ -5,15 +5,15 @@ import { CreateServiceRequestForm } from "../components/serviceRequest/CreateSer
 
 export const CustomerPage = () => {
   return (
-    <div className="space-y-8">
+    <div className="space-y-5">
       <h1 className="page-title">Customer</h1>
 
-      <section className="card space-y-4">
+      <section className="card space-y-3">
         <VehicleList />
         <CreateVehicleForm />
       </section>
 
-      <section className="card space-y-4">
+      <section className="card space-y-3">
         <ServiceRequestList />
         <CreateServiceRequestForm />
       </section>

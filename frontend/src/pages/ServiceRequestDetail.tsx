@@ -49,15 +49,15 @@ const ServiceRequestDetail = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div className="flex items-center justify-between">
         <h1 className="page-title">Service Request Details</h1>
         {serviceRequest && <StatusBadge status={serviceRequest.status} />}
       </div>
 
-      <div className="card space-y-4">
+      <div className="card space-y-3">
         <p className="text-slate-700">{serviceRequest?.initial_complaint}</p>
-        <div className="grid grid-cols-2 gap-4 border-t border-slate-100 pt-4 sm:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 border-t border-slate-100 pt-3 sm:grid-cols-3">
           <div>
             <p className="info-label">Created</p>
             <p className="info-value">
@@ -94,12 +94,12 @@ const ServiceRequestDetail = () => {
         </div>
       </div>
 
-      <div className="card space-y-3">
+      <div className="card space-y-2">
         <h3 className="section-title">Vehicle Details</h3>
         {isVLoading ? (
           <p className="helper-text">Loading...</p>
         ) : (
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             <div>
               <p className="info-label">Make</p>
               <p className="info-value">{vehicleDetails?.make}</p>
@@ -119,7 +119,7 @@ const ServiceRequestDetail = () => {
       </div>
 
       {hasActions && (
-        <div className="card space-y-4">
+        <div className="card space-y-3">
           {user?.role === "admin" && serviceRequest?.status === "pending" && (
             <div className="alert-warning">
               <svg

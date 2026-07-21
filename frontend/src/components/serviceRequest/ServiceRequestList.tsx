@@ -28,7 +28,7 @@ export const ServiceRequestList = () => {
           <li key={sr.id} className="py-2">
             <Link
               to={`/service-request/${sr.id}`}
-              className="flex items-center justify-between gap-3 text-sm text-slate-700 hover:text-indigo-600"
+              className="flex items-center justify-between gap-3 text-sm text-slate-700 hover:text-primary"
             >
               <span>{sr.initial_complaint}</span>
               <StatusBadge status={sr.status} />

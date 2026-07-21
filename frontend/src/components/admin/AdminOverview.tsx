@@ -22,8 +22,8 @@ export const AdminOverview = () => {
       ) ?? [];
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <div className="card stat-tile">
           <p className="stat-tile-label">Customers</p>
           <p className="stat-tile-value">{customerCount}</p>
@@ -58,7 +58,7 @@ export const AdminOverview = () => {
               <li key={sr.id} className="py-2">
                 <Link
                   to={`/service-request/${sr.id}`}
-                  className="flex items-center justify-between gap-3 text-sm text-slate-700 hover:text-indigo-600"
+                  className="flex items-center justify-between gap-3 text-sm text-slate-700 hover:text-primary"
                 >
                   <span>
                     {sr.initial_complaint}

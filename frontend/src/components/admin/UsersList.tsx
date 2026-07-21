@@ -22,7 +22,6 @@ export const UsersList = () => {
 
   return (
     <div>
-      <h2 className="section-title mb-3">Users</h2>
       <div className="mb-4 flex flex-wrap gap-2">
         {roleOptions.map((r) => (
           <button

@@ -7,6 +7,7 @@ import { Layout } from "./components/layout/Layout";
 import { CustomerPage } from "./pages/CustomerPage";
 import { MechanicPage } from "./pages/MechanicPage";
 import { AdminPage } from "./pages/AdminPage";
+import { CreateUserPage } from "./pages/CreateUserPage";
 import { Navigate } from "react-router-dom";
 import ServiceRequestDetail from "./pages/ServiceRequestDetail";
 
@@ -27,6 +28,7 @@ function App() {
             </Route>
             <Route element={<RoleRoute allowedRoles={["admin"]} />}>
               <Route path="/admin" element={<AdminPage />} />
+              <Route path="/admin/create-user" element={<CreateUserPage />} />
             </Route>
             <Route
               path="/service-request/:id"

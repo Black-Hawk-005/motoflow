@@ -21,8 +21,8 @@ export const LoginPage = () => {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
-      <div className="w-full max-w-sm">
-        <h1 className="mb-6 text-center text-2xl font-semibold text-indigo-600">
+      <div className="mb-16 w-full max-w-sm">
+        <h1 className="mb-6 text-center text-2xl font-semibold text-primary">
           MotoFlow
         </h1>
         <form onSubmit={(e) => handleSubmit(e)} className="card space-y-4">

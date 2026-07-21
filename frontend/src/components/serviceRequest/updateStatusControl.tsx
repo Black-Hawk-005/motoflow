@@ -9,7 +9,7 @@ export interface UpdateStatusControlProps {
 }
 
 export const VALID_TRANSITIONS: Record<ServiceStatus, ServiceStatus[]> = {
-  pending: ["assigned"],
+  pending: [],
   assigned: ["in_progress"],
   in_progress: ["action_required"],
   approved: ["completed", "in_progress"],
@@ -52,7 +52,9 @@ export const UpdateStatusControl = (props: UpdateStatusControlProps) => {
           Mark as {status.replace("_", " ")}
         </button>
       ))}
-      {isUpdateSRError && <p className="error-text">{extractErrorMessage(updateSRError)}</p>}
+      {isUpdateSRError && (
+        <p className="error-text">{extractErrorMessage(updateSRError)}</p>
+      )}
     </div>
   );
 };

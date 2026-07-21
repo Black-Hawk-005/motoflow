@@ -51,6 +51,9 @@ body {
   .helper-text {
     @apply text-sm text-slate-500;
   }
+  .alert-warning {
+    @apply flex items-center gap-2 rounded-md border border-orange-200 bg-orange-50 px-4 py-3 text-sm font-medium text-orange-800;
+  }
 
   /* Labeled info (for displaying data, not hints) */
   .info-label {

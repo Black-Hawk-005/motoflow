@@ -120,6 +120,23 @@ const ServiceRequestDetail = () => {
 
       {hasActions && (
         <div className="card space-y-4">
+          {user?.role === "admin" && serviceRequest?.status === "pending" && (
+            <div className="alert-warning">
+              <svg
+                className="h-5 w-5 shrink-0"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.63-1.516 2.63H3.72c-1.347 0-2.189-1.463-1.515-2.63L8.485 2.495ZM10 6a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 6Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <span>This request hasn't been assigned to a mechanic yet.</span>
+            </div>
+          )}
           <div className="flex flex-wrap items-center gap-3">
             {user?.role === "customer" &&
               serviceRequest?.status === "action_required" && (

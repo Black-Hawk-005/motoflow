@@ -12,6 +12,10 @@ export const AdminPage = () => {
       <AdminOverview />
 
       <section className="card">
+        <ServiceRequestList />
+      </section>
+
+      <section className="card">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="section-title">Users</h2>
           <Link to="/admin/create-user" className="btn-primary">
@@ -19,10 +23,6 @@ export const AdminPage = () => {
           </Link>
         </div>
         <UsersList />
-      </section>
-
-      <section className="card">
-        <ServiceRequestList />
       </section>
     </div>
   );

@@ -26,6 +26,7 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(120), unique=True)
     phone: Mapped[str] = mapped_column(String(15), unique=True)
     password_hash: Mapped[str] = mapped_column(String(128))
+    is_approved: Mapped[bool] = mapped_column(Boolean, default=True)
 
 
 class Vehicle(Base):

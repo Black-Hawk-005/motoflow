@@ -27,13 +27,13 @@ async def main():
         print("phone:", "234823031214")
 
         result = await db.execute(
-            select(models.Users).where(
-                models.Users.email == "mech202606@motoflow.co.in",
+            select(models.User).where(
+                models.User.email == "mech202606@motoflow.co.in",
             )
         )
         existing_mechanic = result.scalars().one_or_none()
         if not existing_mechanic:
-            default_mechanic = models.Users(
+            default_mechanic = models.User(
                 role=UserRole.MECHANIC,
                 full_name="Ryan",
                 email="mech202606@motoflow.co.in",
@@ -43,13 +43,13 @@ async def main():
             db.add(default_mechanic)
 
         result = await db.execute(
-            select(models.Users).where(
-                models.Users.email == "admin@motoflow.co.in",
+            select(models.User).where(
+                models.User.email == "admin@motoflow.co.in",
             )
         )
         existing_admin = result.scalars().one_or_none()
         if not existing_admin:
-            default_admin = models.Users(
+            default_admin = models.User(
                 role=UserRole.ADMIN,
                 full_name="admin",
                 email="admin@motoflow.co.in",

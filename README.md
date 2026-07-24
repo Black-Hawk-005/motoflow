@@ -44,7 +44,7 @@ PENDING → ASSIGNED → IN_PROGRESS → ACTION_REQUIRED → APPROVED → COMPLE
 ![Service request detail](screenshots/sr_action_required.png)
 
 **Admin view of service request detail page** - shows full information of the request
-[!Service request detail (Admin/Mechanic)](screenshots/sr_detail_admin.png)
+![Service request detail (Admin/Mechanic)](screenshots/sr_detail_admin.png)
 
 **Customer dashboard** — vehicles and service requests with status badges
 ![Customer dashboard](screenshots/customer_dashboard_1.png)

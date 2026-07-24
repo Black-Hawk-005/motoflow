@@ -12,9 +12,10 @@ export const CreateVehicleForm = () => {
     error: createVehicleError,
   } = useCreateVehicle();
 
+  const currentYear = new Date().getFullYear();
   const [make, setMake] = useState<string>("");
   const [model, setModel] = useState<string>("");
-  const [year, setYear] = useState<number>(1886);
+  const [year, setYear] = useState<number>(currentYear);
   const [license_plate, setLicensePlate] = useState<string>("");
 
   const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
@@ -25,7 +26,7 @@ export const CreateVehicleForm = () => {
         onSuccess: () => {
           setMake("");
           setModel("");
-          setYear(1896);
+          setYear(currentYear);
           setLicensePlate("");
         },
       },

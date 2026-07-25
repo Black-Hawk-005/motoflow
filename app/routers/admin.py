@@ -1,4 +1,5 @@
 from typing import Annotated, List, Optional
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import or_, select
@@ -72,3 +73,23 @@ async def list_users(
         result = await db.execute(select(models.User))
     users = result.scalars().all()
     return users
+
+
+@router.patch("/users/{user_id}/approve", response_model=UserRead)
+async def approve_new_user(
+    user_id: UUID,
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[models.User, Depends(require_admin)],
+):
+    result = await db.execute(select(models.User).where((models.User.id) == user_id))
+    user = result.scalar_one_or_none()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found",
+        )
+
+    user.is_approved = True
+    await db.commit()
+    await db.refresh(user)
+    return user

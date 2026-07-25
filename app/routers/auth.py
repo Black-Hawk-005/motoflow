@@ -51,6 +51,7 @@ async def register(
         email=user_details.email,
         phone=user_details.phone,
         password_hash=hash_password(user_details.password),
+        is_approved=False,
     )
 
     db.add(new_user)
@@ -80,6 +81,12 @@ async def login(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Check your request and try again",
+        )
+
+    if existing_user.is_approved == False:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Admin approval in process"
         )
 
     token = create_access_token(

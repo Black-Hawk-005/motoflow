@@ -1,6 +1,7 @@
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { useState, type SubmitEvent } from "react";
+
 import { useLogin } from "../hooks/auth/useLogin";
-import { useNavigate, useSearchParams } from "react-router-dom";
 import { extractErrorMessage } from "../utils/error";
 
 export const LoginPage = () => {
@@ -50,10 +51,22 @@ export const LoginPage = () => {
               value={password}
             ></input>
           </div>
-          <button type="submit" className="btn-primary w-full" disabled={isPending}>
+          <button
+            type="submit"
+            className="btn-primary w-full"
+            disabled={isPending}
+          >
             {isPending ? "Logging in..." : "Login"}
           </button>
-          {isError && <p className="error-text">{extractErrorMessage(error)}</p>}
+          {isError && (
+            <p className="error-text">{extractErrorMessage(error)}</p>
+          )}
+          <div className="text-center">
+            <span className="helper-text">New here? </span>
+            <Link to="/register" className="text-sm text-primary hover:underline">
+              Register
+            </Link>
+          </div>
         </form>
       </div>
     </div>

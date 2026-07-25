@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import { LoginPage } from "./pages/LoginPage";
+import { RegisterPage } from "./pages/RegisterPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { PrivateRoute } from "./components/auth/PrivateRoute";
 import { RoleRoute } from "./components/auth/RoleRoute";
@@ -17,6 +18,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route element={<PrivateRoute />}>
           <Route element={<Layout />}>
             <Route path="/dashboard" element={<DashboardPage />} />

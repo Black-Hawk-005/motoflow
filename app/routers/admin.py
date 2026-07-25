@@ -65,12 +65,31 @@ async def create_user(
 async def list_users(
     db: Annotated[AsyncSession, Depends(get_db)],
     current_user: Annotated[models.User, Depends(require_admin)],
+    approval_state: Optional[bool] = None,
     role: Optional[UserRole] = None,
 ):
-    if role:
-        result = await db.execute(select(models.User).where((models.User.role) == role))
+    if role is not None and approval_state is not None:
+        result = await db.execute(
+            select(models.User).where(
+                (models.User.role) == role,
+                (models.User.is_approved == approval_state),
+            )
+        )
+    elif role is not None:
+        result = await db.execute(
+            select(models.User).where(
+                (models.User.role) == role,
+            )
+        )
+    elif approval_state is not None:
+        result = await db.execute(
+            select(models.User).where(
+                (models.User.is_approved == approval_state),
+            )
+        )
     else:
         result = await db.execute(select(models.User))
+
     users = result.scalars().all()
     return users
 

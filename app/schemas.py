@@ -46,6 +46,7 @@ class UserRead(BaseModel):
     email: EmailStr
     role: UserRole
     phone: str
+    is_approved: bool
 
 
 class VehicleCreate(BaseModel):

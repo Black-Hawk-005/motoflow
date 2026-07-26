@@ -2,9 +2,12 @@ import { listUsers } from "../../api/admin";
 import { useQuery } from "@tanstack/react-query";
 import type { User } from "../../types/auth";
 
-export const useUsers = (role?: User["role"] | undefined) => {
+export const useUsers = (
+  role?: User["role"] | undefined,
+  approvalState?: boolean | undefined,
+) => {
   return useQuery({
-    queryKey: ["users", role],
-    queryFn: () => listUsers(role),
+    queryFn: () => listUsers(role, approvalState),
+    queryKey: ["users", role, approvalState],
   });
 };

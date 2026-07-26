@@ -4,6 +4,7 @@ export interface User {
   email: string;
   phone: string;
   role: "customer" | "admin" | "mechanic";
+  is_approved: boolean
 }
 
 export interface LoginResponse {

@@ -15,7 +15,7 @@ export const AppHeader = () => {
 
   return (
     <header className="bg-primary fixed top-0 left-0 w-full shadow-md z-50">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-3">
+      <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-6">
         <Link to={`/dashboard`}>
           <span className="text-lg font-semibold text-white transition-colors hover:text-white/80">
             MotoFlow

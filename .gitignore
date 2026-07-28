@@ -11,6 +11,8 @@ wheels/
 
 # Misc
 .env
+.env.*
+!.env.example
 CLAUDE.md
 HOW_TO_USE_CHAT.md
 context.md

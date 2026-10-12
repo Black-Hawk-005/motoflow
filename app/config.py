@@ -14,5 +14,7 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 30
     algorithm: str = "HS256"
 
+    cors_origins: str
+
 
 settings = Settings()  # type: ignore [call-arg]

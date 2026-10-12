@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.config import settings
 from app.database import engine
 from app.routers import (
     admin,
@@ -26,10 +27,7 @@ async def lifespan(_app: FastAPI):
     await engine.dispose()
 
 
-origins = [
-    "http://localhost:5173",  # Default Vite port
-    "http://127.0.0.1:5173",
-]
+origins = [url.strip() for url in settings.cors_origins.split(",") if url.strip()]
 
 app = FastAPI(lifespan=lifespan)
 app.add_middleware(

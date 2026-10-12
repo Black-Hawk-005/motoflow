@@ -1,15 +1,15 @@
-import random
+import uuid
 
 from test.conftest import test_settings
 
 
 def build_payload(**overrides):
-    unique_id = random.randint(100000, 999999)
+    unique_id = uuid.uuid4().hex[:12]
     payload = {
         "full_name": "Nikhilesh H",
         "email": f"nikgrinding{unique_id}@gmail.com",
         "password": "nik@12323",
-        "phone": f"+9194029{unique_id}",
+        "phone": f"+91{10**9 + uuid.uuid4().int % (9 * 10**9)}",
     }
     payload.update(overrides)
     return payload

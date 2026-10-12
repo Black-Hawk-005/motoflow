@@ -1,4 +1,4 @@
-import random
+import uuid
 from test.conftest import test_settings
 from test.test_auth import (
     ADMIN_EMAIL,
@@ -32,7 +32,7 @@ async def create_approved_customer(client):
 
 
 async def create_vehicle(client, customer_token, **overrides):
-    unique_id = random.randint(100000, 999999)
+    unique_id = uuid.uuid4().hex[:10].upper()
     payload = {
         "make": "Maruti Suzuki",
         "model": "Swift",

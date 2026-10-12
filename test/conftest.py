@@ -11,12 +11,18 @@ class TestSettings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env.test",
         env_file_encoding="utf-8",
+        extra="ignore",
     )
 
     database_url: str
     secret_key: SecretStr
     access_token_expire_minutes: int = 30
     algorithm: str = "HS256"
+
+    seed_admin_email: str
+    seed_admin_password: SecretStr
+    seed_mechanic_email: str
+    seed_mechanic_password: SecretStr
 
 
 test_settings = TestSettings()  # type: ignore [call-arg]

@@ -1,5 +1,7 @@
 import random
 
+from test.conftest import test_settings
+
 
 def build_payload(**overrides):
     unique_id = random.randint(100000, 999999)
@@ -19,8 +21,8 @@ async def register_user(client, **overrides):
     return {**payload, "id": response.json()["id"]}
 
 
-ADMIN_EMAIL = "admin@motoflow.co.in"
-ADMIN_PASSWORD = "admin@123"
+ADMIN_EMAIL = test_settings.seed_admin_email
+ADMIN_PASSWORD = test_settings.seed_admin_password.get_secret_value()
 
 
 async def get_admin_token(client):

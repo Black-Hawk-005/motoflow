@@ -1,4 +1,5 @@
 import random
+from test.conftest import test_settings
 from test.test_auth import (
     ADMIN_EMAIL,
     ADMIN_PASSWORD,
@@ -68,8 +69,8 @@ async def get_seeded_mechanic_id(client, admin_token):
     return response.json()[0]["id"]
 
 
-MECHANIC_EMAIL = "mech202606@motoflow.co.in"
-MECHANIC_PASSWORD = "mech@123"
+MECHANIC_EMAIL = test_settings.seed_mechanic_email
+MECHANIC_PASSWORD = test_settings.seed_mechanic_password.get_secret_value()
 
 
 async def get_mechanic_token(client):

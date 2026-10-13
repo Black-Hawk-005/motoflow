@@ -85,8 +85,7 @@ async def login(
 
     if existing_user.is_approved == False:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Admin approval in process"
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Admin approval in process"
         )
 
     token = create_access_token(
@@ -98,6 +97,6 @@ async def login(
     return {"access_token": token, "token_type": "bearer"}
 
 
-@router.get("/me")
+@router.get("/me", response_model=UserRead)
 def get_me(current_user: Annotated[models.User, Depends(get_current_user)]):
     return current_user

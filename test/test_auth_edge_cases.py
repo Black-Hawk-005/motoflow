@@ -1,11 +1,5 @@
 import uuid
 from datetime import timedelta
-
-import jwt
-import pytest
-
-from app.auth import create_access_token
-from app.config import settings
 from test.helpers import (
     ADMIN_EMAIL,
     ADMIN_PASSWORD,
@@ -17,6 +11,12 @@ from test.helpers import (
     register_user,
     unique_plate,
 )
+
+import jwt
+import pytest
+
+from app.auth import create_access_token
+from app.config import settings
 
 WRONG_KEY = "this-is-definitely-not-the-real-signing-key-0123456789"
 
@@ -40,13 +40,6 @@ async def test_me_returns_the_current_user(client):
     assert body["role"] == "customer"
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason=(
-        "GET /auth/me has no response_model and returns the ORM user, so the "
-        "argon2 password_hash is included in the JSON response"
-    ),
-)
 async def test_me_does_not_leak_password_hash(client):
     customer = await create_approved_customer(client)
 
@@ -68,7 +61,9 @@ def _crafted_tokens():
     key = settings.secret_key.get_secret_value()
     return {
         "garbage": "not.a.jwt",
-        "expired": create_access_token({"sub": sub}, expires_delta=timedelta(minutes=-5)),
+        "expired": create_access_token(
+            {"sub": sub}, expires_delta=timedelta(minutes=-5)
+        ),
         "wrong signing key": jwt.encode(
             {"sub": sub, "exp": 4102444800}, WRONG_KEY, algorithm="HS256"
         ),
@@ -221,7 +216,10 @@ async def test_role_restricted_endpoints_return_403_for_wrong_role(client):
         assert response.status_code == 403
 
     # customer-only: creating service requests
-    request = {"vehicle_id": fake_id, "initial_complaint": "Strange noise from the engine"}
+    request = {
+        "vehicle_id": fake_id,
+        "initial_complaint": "Strange noise from the engine",
+    }
     for token in (mechanic_token, admin_token):
         response = await client.post(
             "/service-requests/", json=request, headers=auth_headers(token)

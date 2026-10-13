@@ -43,6 +43,12 @@ async def create_line_item(
             detail="Service request doesn't exist",
         )
 
+    if service_request.mechanic_id != current_user.id:
+        raise HTTPException(
+            status_code=http_status.HTTP_404_NOT_FOUND,
+            detail="Service request doesn't exist",
+        )
+
     if service_request.status in (
         ServiceStatus.CLOSED,
         ServiceStatus.COMPLETED,
@@ -243,6 +249,9 @@ async def list_line_items(
     if (
         current_user.role == UserRole.CUSTOMER
         and service_request.customer_id != current_user.id
+    ) or (
+        current_user.role == UserRole.MECHANIC
+        and service_request.mechanic_id != current_user.id
     ):
         raise HTTPException(
             status_code=http_status.HTTP_404_NOT_FOUND,

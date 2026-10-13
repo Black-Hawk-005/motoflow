@@ -1,17 +1,16 @@
 import uuid
 from decimal import Decimal
-
-import pytest
-
+from test.helpers import extra_mechanic  # noqa: F401  (fixture)
+from test.helpers import tracked_users  # noqa: F401  (fixture; used by extra_mechanic)
 from test.helpers import (
     add_line_item,
     auth_headers,
     build_request,
     create_approved_customer,
-    extra_mechanic,  # noqa: F401  (fixture)
     get_request_status,
-    tracked_users,  # noqa: F401  (fixture; used by extra_mechanic)
 )
+
+import pytest
 
 LOCKED_STATES = ["approved", "completed", "closed"]
 
@@ -58,7 +57,9 @@ async def test_only_mechanics_can_create_line_items(client):
     customer = await client.post(
         "/line-items/", json=payload, headers=ctx["customer_headers"]
     )
-    admin = await client.post("/line-items/", json=payload, headers=ctx["admin_headers"])
+    admin = await client.post(
+        "/line-items/", json=payload, headers=ctx["admin_headers"]
+    )
     anonymous = await client.post("/line-items/", json=payload)
 
     assert (customer.status_code, admin.status_code, anonymous.status_code) == (
@@ -101,13 +102,6 @@ async def test_line_item_for_unknown_request_is_404(client):
     assert response.status_code == 404
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason=(
-        "create_line_item never checks that the mechanic is the one assigned to "
-        "the request (update/delete do), so any mechanic can bill any customer"
-    ),
-)
 async def test_unassigned_mechanic_cannot_add_line_item(client, extra_mechanic):
     ctx = await build_request(client, "in_progress", line_items=0)
 
@@ -350,10 +344,14 @@ async def test_request_approval_needs_every_single_line_item_approved(client):
 async def test_editing_after_approving_items_blocks_request_approval_again(client):
     ctx = await build_request(client, "action_required", line_items=1)
     item_id = ctx["line_item_ids"][0]
-    await client.patch(f"/line-items/{item_id}/approve", headers=ctx["customer_headers"])
+    await client.patch(
+        f"/line-items/{item_id}/approve", headers=ctx["customer_headers"]
+    )
 
     edit = await client.patch(
-        f"/line-items/{item_id}", json={"cost": "9999.00"}, headers=ctx["mechanic_headers"]
+        f"/line-items/{item_id}",
+        json={"cost": "9999.00"},
+        headers=ctx["mechanic_headers"],
     )
     assert edit.status_code == 200
 
@@ -432,14 +430,14 @@ async def test_line_item_endpoints_require_authentication(client):
     assert [r.status_code for r in responses] == [401] * 5
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason=(
-        "list_line_items only restricts customers, so any mechanic can read the "
-        "line items of requests assigned to someone else (comments and request "
-        "detail return 404 for unassigned mechanics)"
-    ),
-)
+# @pytest.mark.xfail(
+#     strict=True,
+#     reason=(
+#         "list_line_items only restricts customers, so any mechanic can read the "
+#         "line items of requests assigned to someone else (comments and request "
+#         "detail return 404 for unassigned mechanics)"
+#     ),
+# )
 async def test_unassigned_mechanic_cannot_list_line_items(client, extra_mechanic):
     ctx = await build_request(client, "in_progress", line_items=1)
 

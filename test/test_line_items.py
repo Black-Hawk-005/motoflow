@@ -1,16 +1,17 @@
 import uuid
 from decimal import Decimal
-from test.helpers import extra_mechanic  # noqa: F401  (fixture)
-from test.helpers import tracked_users  # noqa: F401  (fixture; used by extra_mechanic)
+
+import pytest
+
 from test.helpers import (
     add_line_item,
     auth_headers,
     build_request,
     create_approved_customer,
+    extra_mechanic,  # noqa: F401  (fixture)
     get_request_status,
+    tracked_users,  # noqa: F401  (fixture; used by extra_mechanic)
 )
-
-import pytest
 
 LOCKED_STATES = ["approved", "completed", "closed"]
 

@@ -1,5 +1,11 @@
 import uuid
 from datetime import timedelta
+
+import jwt
+import pytest
+
+from app.auth import create_access_token
+from app.config import settings
 from test.helpers import (
     ADMIN_EMAIL,
     ADMIN_PASSWORD,
@@ -11,12 +17,6 @@ from test.helpers import (
     register_user,
     unique_plate,
 )
-
-import jwt
-import pytest
-
-from app.auth import create_access_token
-from app.config import settings
 
 WRONG_KEY = "this-is-definitely-not-the-real-signing-key-0123456789"
 

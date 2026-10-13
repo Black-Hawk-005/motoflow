@@ -1,8 +1,7 @@
 import uuid
+
 from test.conftest import test_settings
 from test.test_auth import (
-    ADMIN_EMAIL,
-    ADMIN_PASSWORD,
     get_admin_token,
     register_user,
 )

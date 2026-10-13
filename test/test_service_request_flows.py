@@ -1,6 +1,7 @@
 import uuid
-from test.helpers import extra_mechanic  # noqa: F401  (fixture)
-from test.helpers import tracked_users  # noqa: F401  (fixture; used by extra_mechanic)
+
+import pytest
+
 from test.helpers import (
     STATUS_ORDER,
     auth_headers,
@@ -8,12 +9,12 @@ from test.helpers import (
     create_approved_customer,
     create_service_request,
     create_vehicle,
+    extra_mechanic,  # noqa: F401  (fixture)
     get_admin_token,
     get_request_status,
     patch_request,
+    tracked_users,  # noqa: F401  (fixture; used by extra_mechanic)
 )
-
-import pytest
 
 # Statuses reachable from each state through PATCH /service-requests/{id}
 # (approve/reject have their own endpoints and are tested separately).

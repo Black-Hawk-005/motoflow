@@ -79,13 +79,6 @@ async def test_missing_vehicle_fields_rejected(client):
     assert response.status_code == 422
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason=(
-        "VehicleCreate uses min_length=4 for make/model, so common real values "
-        "such as 'BMW', 'Kia', 'i20' or 'X5' are rejected with 422"
-    ),
-)
 @pytest.mark.parametrize(
     "overrides",
     [{"make": "BMW"}, {"make": "Kia"}, {"model": "i20"}, {"model": "X5"}],
@@ -345,6 +338,53 @@ async def test_update_unknown_vehicle_is_404(client):
     )
 
     assert response.status_code == 404
+
+
+@pytest.mark.parametrize("field, value", [("make", "BMW"), ("model", "i2")])
+async def test_update_short_vehicle_names_accepted(client, field, value):
+    me = await create_approved_customer(client)
+    created, _ = await add_vehicle(client, me["token"])
+    vehicle_id = created.json()["id"]
+
+    response = await client.patch(
+        f"/vehicles/{vehicle_id}",
+        json={field: value},
+        headers=auth_headers(me["token"]),
+    )
+
+    assert response.status_code == 200
+    assert response.json()[field] == value
+
+
+@pytest.mark.parametrize("field", ["make", "model"])
+async def test_update_vehicle_name_longer_than_50_characters_rejected(client, field):
+    me = await create_approved_customer(client)
+    created, _ = await add_vehicle(client, me["token"])
+    vehicle_id = created.json()["id"]
+
+    response = await client.patch(
+        f"/vehicles/{vehicle_id}",
+        json={field: "x" * 51},
+        headers=auth_headers(me["token"]),
+    )
+
+    assert response.status_code == 422
+
+
+@pytest.mark.parametrize("field", ["make", "model"])
+@pytest.mark.parametrize("value", ["", "   "])
+async def test_update_blank_vehicle_name_rejected(client, field, value):
+    me = await create_approved_customer(client)
+    created, _ = await add_vehicle(client, me["token"])
+    vehicle_id = created.json()["id"]
+
+    response = await client.patch(
+        f"/vehicles/{vehicle_id}",
+        json={field: value},
+        headers=auth_headers(me["token"]),
+    )
+
+    assert response.status_code == 422
 
 
 # --- delete ---------------------------------------------------------------

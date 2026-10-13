@@ -8,6 +8,10 @@ from pydantic import BaseModel, ConfigDict, EmailStr, Field, StringConstraints
 
 from app.config import settings
 
+VehicleName = Annotated[
+    str, StringConstraints(strip_whitespace=True, min_length=1, max_length=50)
+]
+
 
 class UserRole(str, Enum):
     CUSTOMER = "customer"
@@ -52,8 +56,8 @@ class UserRead(BaseModel):
 
 
 class VehicleCreate(BaseModel):
-    make: str = Field(min_length=4, max_length=50)
-    model: str = Field(min_length=4, max_length=50)
+    make: VehicleName
+    model: VehicleName
     year: int = Field(gt=1885)
     license_plate: str = Field(min_length=8)
 
@@ -70,8 +74,8 @@ class VehicleRead(BaseModel):
 
 
 class VehicleUpdate(BaseModel):
-    make: Optional[str] = Field(default=None, min_length=4, max_length=50)
-    model: Optional[str] = Field(default=None, min_length=4, max_length=50)
+    make: Optional[VehicleName] = None
+    model: Optional[VehicleName] = None
     year: Optional[int] = Field(default=None, gt=1885)
     license_plate: Optional[str] = Field(default=None, min_length=8)
 

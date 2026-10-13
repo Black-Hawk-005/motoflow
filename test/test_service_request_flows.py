@@ -1,7 +1,6 @@
 import uuid
-
-import pytest
-
+from test.helpers import extra_mechanic  # noqa: F401  (fixture)
+from test.helpers import tracked_users  # noqa: F401  (fixture; used by extra_mechanic)
 from test.helpers import (
     STATUS_ORDER,
     auth_headers,
@@ -9,12 +8,12 @@ from test.helpers import (
     create_approved_customer,
     create_service_request,
     create_vehicle,
-    extra_mechanic,  # noqa: F401  (fixture)
     get_admin_token,
     get_request_status,
     patch_request,
-    tracked_users,  # noqa: F401  (fixture; used by extra_mechanic)
 )
+
+import pytest
 
 # Statuses reachable from each state through PATCH /service-requests/{id}
 # (approve/reject have their own endpoints and are tested separately).
@@ -250,14 +249,6 @@ async def test_reject_requires_a_message_field(client):
     assert await get_request_status(client, ctx) == "action_required"
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason=(
-        "ServiceRequestReject.message has no min_length, so an empty or "
-        "whitespace-only rejection note is accepted and stored as a blank "
-        "comment, although the README says the note is required"
-    ),
-)
 @pytest.mark.parametrize("message", ["", "   "])
 async def test_reject_requires_a_non_blank_note(client, message):
     ctx = await build_request(client, "action_required")
@@ -320,10 +311,32 @@ async def test_null_mechanic_id_is_rejected(client):
     ctx = await build_request(client, "pending")
 
     response = await patch_request(
-        client, ctx["admin_token"], ctx["request_id"], status="assigned", mechanic_id=None
+        client,
+        ctx["admin_token"],
+        ctx["request_id"],
+        status="assigned",
+        mechanic_id=None,
     )
 
     assert response.status_code == 400
+
+
+async def test_null_mechanic_id_cannot_unassign_a_started_request(client):
+    ctx = await build_request(client, "in_progress")
+
+    as_admin = await patch_request(
+        client, ctx["admin_token"], ctx["request_id"], mechanic_id=None
+    )
+    as_mechanic = await patch_request(
+        client, ctx["mechanic_token"], ctx["request_id"], mechanic_id=None
+    )
+
+    assert as_admin.status_code == 400
+    assert as_mechanic.status_code == 403
+    current = await client.get(
+        f"/service-requests/{ctx['request_id']}", headers=ctx["admin_headers"]
+    )
+    assert current.json()["mechanic_id"] == ctx["mechanic_id"]
 
 
 async def test_update_unknown_request_is_404(client):
@@ -336,14 +349,6 @@ async def test_update_unknown_request_is_404(client):
     assert response.status_code == 404
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason=(
-        "update_request only checks the caller's role, not that the mechanic is "
-        "assigned to the request, so any mechanic can change the status of "
-        "someone else's job"
-    ),
-)
 async def test_unassigned_mechanic_cannot_change_request_status(client, extra_mechanic):
     ctx = await build_request(client, "assigned")
 
@@ -364,7 +369,10 @@ async def test_customer_creates_request_with_pending_status(client):
 
     response = await client.post(
         "/service-requests/",
-        json={"vehicle_id": vehicle["id"], "initial_complaint": "Brakes are squealing loudly"},
+        json={
+            "vehicle_id": vehicle["id"],
+            "initial_complaint": "Brakes are squealing loudly",
+        },
         headers=auth_headers(customer["token"]),
     )
 
@@ -385,7 +393,10 @@ async def test_cannot_open_request_for_someone_elses_or_unknown_vehicle(client):
     for vehicle_id in (vehicle["id"], str(uuid.uuid4())):
         response = await client.post(
             "/service-requests/",
-            json={"vehicle_id": vehicle_id, "initial_complaint": "Brakes are squealing loudly"},
+            json={
+                "vehicle_id": vehicle_id,
+                "initial_complaint": "Brakes are squealing loudly",
+            },
             headers=headers,
         )
         assert response.status_code == 404
@@ -420,7 +431,9 @@ async def test_request_endpoints_require_authentication(client):
         await client.get(f"/service-requests/{request_id}"),
         await client.patch(f"/service-requests/{request_id}", json={}),
         await client.patch(f"/service-requests/{request_id}/approve"),
-        await client.patch(f"/service-requests/{request_id}/reject", json={"message": "x"}),
+        await client.patch(
+            f"/service-requests/{request_id}/reject", json={"message": "x"}
+        ),
     ]
 
     assert [r.status_code for r in responses] == [401] * 6
@@ -445,7 +458,9 @@ async def test_mechanic_only_sees_assigned_requests(client, extra_mechanic):
     assigned = await build_request(client, "assigned")
     unassigned = await build_request(client, "pending")
 
-    listing = await client.get("/service-requests/", headers=assigned["mechanic_headers"])
+    listing = await client.get(
+        "/service-requests/", headers=assigned["mechanic_headers"]
+    )
     ids = {r["id"] for r in listing.json()}
     assert assigned["request_id"] in ids
     assert unassigned["request_id"] not in ids
@@ -506,9 +521,7 @@ async def test_multiple_requests_for_same_vehicle_are_independent(client):
 
     assert first["id"] != second["id"]
     assert first["status"] == second["status"] == "pending"
-    response = await patch_request(
-        client, admin_token, first["id"], status="completed"
-    )
+    response = await patch_request(client, admin_token, first["id"], status="completed")
     assert response.status_code == 400
     listing = await client.get(
         "/service-requests/", headers=auth_headers(customer["token"])

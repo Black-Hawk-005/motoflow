@@ -183,13 +183,25 @@ async def update_request(
             detail="Request not found",
         )
 
-    if "mechanic_id" in update_data:
-        if current_user.role == UserRole.MECHANIC:
+    if current_user.role == UserRole.MECHANIC:
+        if "mechanic_id" in update_data:
             raise HTTPException(
                 status_code=http_status.HTTP_403_FORBIDDEN,
                 detail="Admin only operation performed",
             )
-        if not update_data.get("mechanic_id") or (
+
+        if request.status == ServiceStatus.PENDING:
+            raise HTTPException(
+                status_code=http_status.HTTP_400_BAD_REQUEST, detail="Invalid request"
+            )
+
+        if request.mechanic_id != current_user.id:
+            raise HTTPException(
+                status_code=http_status.HTTP_404_NOT_FOUND, detail="Request not found"
+            )
+
+    if "mechanic_id" in update_data:
+        if update_data["mechanic_id"] is None or (
             request.status == ServiceStatus.PENDING
             and update_data.get("status") != ServiceStatus.ASSIGNED
         ):
@@ -205,7 +217,7 @@ async def update_request(
             )
         )
         mechanic = result.scalar_one_or_none()
-        if mechanic is None:
+        if not mechanic:
             raise HTTPException(
                 status_code=http_status.HTTP_400_BAD_REQUEST,
                 detail="Invalid request",
@@ -281,7 +293,7 @@ async def approve_request(
         if line_item.is_approved == False:
             raise HTTPException(
                 status_code=http_status.HTTP_400_BAD_REQUEST,
-                detail="All line items are not approved"
+                detail="All line items are not approved",
             )
 
     request.status = ServiceStatus.APPROVED

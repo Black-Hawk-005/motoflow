@@ -1,14 +1,20 @@
 import uuid
 
 import pytest
+from sqlalchemy import func, select
 
+from app.models import Comment, ServiceLineItem, ServiceRequest, Vehicle
+from test.conftest import AsyncSessionLocal
 from test.helpers import (
+    STATUS_ORDER,
     auth_headers,
     build_request,
     create_approved_customer,
+    create_service_request,
     get_admin_token,
     get_mechanic_id,
     get_mechanic_token,
+    get_request_status,
     vehicle_payload,
 )
 
@@ -433,19 +439,91 @@ async def test_delete_unknown_vehicle_is_404(client):
     assert response.status_code == 404
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason=(
-        "service_requests.vehicle_id has no ON DELETE rule, so deleting a "
-        "vehicle that has a service request raises an IntegrityError (HTTP 500) "
-        "instead of a clean 4xx response"
-    ),
-)
-async def test_deleting_vehicle_with_service_request_returns_client_error(client):
-    ctx = await build_request(client, "pending")
+UNCLOSED_STATES = [state for state in STATUS_ORDER if state != "closed"]
+
+
+async def count_rows(model, **filters):
+    async with AsyncSessionLocal() as session:
+        result = await session.execute(
+            select(func.count()).select_from(model).filter_by(**filters)
+        )
+        return result.scalar_one()
+
+
+@pytest.mark.parametrize("state", UNCLOSED_STATES)
+async def test_deleting_vehicle_with_unclosed_request_is_409(client, state):
+    ctx = await build_request(client, state)
+    vehicle_id = ctx["vehicle"]["id"]
 
     response = await client.delete(
-        f"/vehicles/{ctx['vehicle']['id']}", headers=ctx["customer_headers"]
+        f"/vehicles/{vehicle_id}", headers=ctx["customer_headers"]
     )
 
-    assert response.status_code in (400, 409)
+    assert response.status_code == 409
+    vehicle = await client.get(
+        f"/vehicles/{vehicle_id}", headers=ctx["customer_headers"]
+    )
+    assert vehicle.status_code == 200
+    assert await get_request_status(client, ctx) == state
+
+
+async def test_deleting_vehicle_with_closed_request_removes_both(client):
+    ctx = await build_request(client, "closed")
+    vehicle_id = ctx["vehicle"]["id"]
+    request_id = uuid.UUID(ctx["request_id"])
+    assert await count_rows(ServiceLineItem, service_request_id=request_id) > 0
+
+    response = await client.delete(
+        f"/vehicles/{vehicle_id}", headers=ctx["customer_headers"]
+    )
+
+    assert response.status_code == 204
+    vehicle = await client.get(
+        f"/vehicles/{vehicle_id}", headers=ctx["customer_headers"]
+    )
+    assert vehicle.status_code == 404
+    service_request = await client.get(
+        f"/service-requests/{ctx['request_id']}", headers=ctx["admin_headers"]
+    )
+    assert service_request.status_code == 404
+    assert await count_rows(ServiceRequest, id=request_id) == 0
+    assert await count_rows(ServiceLineItem, service_request_id=request_id) == 0
+    assert await count_rows(Comment, service_request_id=request_id) == 0
+
+
+async def test_admin_can_delete_vehicle_with_only_closed_requests(client):
+    ctx = await build_request(client, "closed")
+    vehicle_id = ctx["vehicle"]["id"]
+
+    response = await client.delete(
+        f"/vehicles/{vehicle_id}", headers=ctx["admin_headers"]
+    )
+
+    assert response.status_code == 204
+    assert await count_rows(Vehicle, id=uuid.UUID(vehicle_id)) == 0
+
+
+async def test_one_open_request_blocks_delete_and_keeps_closed_ones(client):
+    ctx = await build_request(client, "closed")
+    vehicle_id = ctx["vehicle"]["id"]
+    await create_service_request(client, ctx["customer"]["token"], vehicle_id)
+
+    response = await client.delete(
+        f"/vehicles/{vehicle_id}", headers=ctx["customer_headers"]
+    )
+
+    assert response.status_code == 409
+    assert await count_rows(Vehicle, id=uuid.UUID(vehicle_id)) == 1
+    assert await count_rows(ServiceRequest, vehicle_id=uuid.UUID(vehicle_id)) == 2
+
+
+async def test_deleting_another_customers_vehicle_with_requests_is_404(client):
+    ctx = await build_request(client, "closed")
+    intruder = await create_approved_customer(client)
+
+    response = await client.delete(
+        f"/vehicles/{ctx['vehicle']['id']}", headers=auth_headers(intruder["token"])
+    )
+
+    assert response.status_code == 404
+    assert await count_rows(Vehicle, id=uuid.UUID(ctx["vehicle"]["id"])) == 1

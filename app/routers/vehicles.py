@@ -8,7 +8,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app import models
 from app.database import get_db
 from app.dependencies import get_current_user, require_roles
-from app.schemas import UserRead, UserRole, VehicleCreate, VehicleRead, VehicleUpdate
+from app.schemas import (
+    ServiceStatus,
+    UserRead,
+    UserRole,
+    VehicleCreate,
+    VehicleRead,
+    VehicleUpdate,
+)
 
 router = APIRouter()
 
@@ -127,13 +134,28 @@ async def delete_vehicle(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Vehicle not found"
         )
-
-    if (
+    elif (
         current_user.role == UserRole.CUSTOMER
         and vehicle.customer_id != current_user.id
     ):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Vehicle not found"
+        )
+
+    result = await db.execute(
+        select(models.ServiceRequest.id)
+        .where(
+            and_(
+                (models.ServiceRequest.vehicle_id == vehicle_id),
+                (models.ServiceRequest.status != ServiceStatus.CLOSED),
+            )
+        )
+        .limit(1)
+    )
+    if result.first() is not None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Vehicle has unclosed service requests and can't be deleted",
         )
 
     await db.execute(delete(models.Vehicle).where(models.Vehicle.id == vehicle_id))

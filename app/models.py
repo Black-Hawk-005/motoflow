@@ -51,7 +51,7 @@ class ServiceRequest(Base):
         index=True,
     )
     vehicle_id: Mapped[UUID] = mapped_column(
-        ForeignKey("vehicles.id"),
+        ForeignKey("vehicles.id", ondelete="CASCADE"),
         index=True,
     )
     mechanic_id: Mapped[Optional[UUID]] = mapped_column(

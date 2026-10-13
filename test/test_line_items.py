@@ -430,14 +430,6 @@ async def test_line_item_endpoints_require_authentication(client):
     assert [r.status_code for r in responses] == [401] * 5
 
 
-# @pytest.mark.xfail(
-#     strict=True,
-#     reason=(
-#         "list_line_items only restricts customers, so any mechanic can read the "
-#         "line items of requests assigned to someone else (comments and request "
-#         "detail return 404 for unassigned mechanics)"
-#     ),
-# )
 async def test_unassigned_mechanic_cannot_list_line_items(client, extra_mechanic):
     ctx = await build_request(client, "in_progress", line_items=1)
 

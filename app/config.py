@@ -16,5 +16,7 @@ class Settings(BaseSettings):
 
     cors_origins: str
 
+    service_request_reject_message_min_len: int = 1
+
 
 settings = Settings()  # type: ignore [call-arg]

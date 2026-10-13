@@ -1,10 +1,12 @@
 from datetime import datetime
 from decimal import Decimal
 from enum import Enum
-from typing import Optional
+from typing import Annotated, Optional
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, StringConstraints
+
+from app.config import settings
 
 
 class UserRole(str, Enum):
@@ -116,7 +118,13 @@ class ServiceRequestUpdate(BaseModel):
 
 
 class ServiceRequestReject(BaseModel):
-    message: str
+    message: Annotated[
+        str,
+        StringConstraints(
+            strip_whitespace=True,
+            min_length=settings.service_request_reject_message_min_len,
+        ),
+    ]
 
 
 class ServiceLineItemCreate(BaseModel):

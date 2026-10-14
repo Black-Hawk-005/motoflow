@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: motoflow_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgresql+psycopg://postgres:postgres@localhost:5432/motoflow_test
+      SECRET_KEY: ci-only-secret-key-for-throwaway-test-runs
+      CORS_ORIGINS: http://localhost:5173
+      SEED_ADMIN_EMAIL: admin@motoflow.dev
+      SEED_ADMIN_PASSWORD: ci-admin-password-1
+      SEED_MECHANIC_EMAIL: mechanic@motoflow.dev
+      SEED_MECHANIC_PASSWORD: ci-mechanic-password-1
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --locked
+      - run: uv run alembic upgrade head
+      - run: uv run pytest

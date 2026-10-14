@@ -11,7 +11,7 @@ export const DashboardPage = () => {
     else if (data.role === "mechanic") navigate("/mechanic");
     else if (data.role === "admin") navigate("/admin");
     else navigate("/login");
-  }, [data]);
+  }, [data, navigate]);
   return (
     <>
       {isLoading && <p className="helper-text">Loading...</p>}

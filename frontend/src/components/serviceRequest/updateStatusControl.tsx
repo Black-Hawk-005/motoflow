@@ -1,22 +1,12 @@
 import { useMe } from "../../hooks/auth/useMe";
 import { useServiceRequest } from "../../hooks/serviceRequest/useServiceRequest";
 import { useUpdateServiceRequest } from "../../hooks/serviceRequest/useUpdateServiceRequest";
-import type { ServiceStatus } from "../../types/serviceRequest";
 import { extractErrorMessage } from "../../utils/error";
+import { VALID_TRANSITIONS } from "../../types/transitions";
 
 export interface UpdateStatusControlProps {
   id: string;
 }
-
-export const VALID_TRANSITIONS: Record<ServiceStatus, ServiceStatus[]> = {
-  pending: [],
-  assigned: ["in_progress"],
-  in_progress: ["action_required"],
-  approved: ["completed", "in_progress"],
-  completed: ["closed"],
-  action_required: [],
-  closed: [],
-};
 
 export const UpdateStatusControl = (props: UpdateStatusControlProps) => {
   const { data: user, isLoading: isRoleLoading } = useMe();

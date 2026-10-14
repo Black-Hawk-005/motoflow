@@ -15,7 +15,7 @@ import { AssignMechanicControl } from "../components/serviceRequest/AssignMechan
 import type { ServiceStatus } from "../types/serviceRequest";
 import { extractErrorMessage } from "../utils/error";
 import { StatusBadge } from "../components/common/StatusBadge";
-import { VALID_TRANSITIONS } from "../components/serviceRequest/updateStatusControl";
+import { VALID_TRANSITIONS } from "../types/transitions";
 import { formatDateTime } from "../utils/date";
 
 const ServiceRequestDetail = () => {

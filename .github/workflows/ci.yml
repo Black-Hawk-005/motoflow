@@ -38,4 +38,5 @@ jobs:
       - uses: astral-sh/setup-uv@v6
       - run: uv sync --locked
       - run: uv run alembic upgrade head
+      - run: uv run python admin_mech_seed.py
       - run: uv run pytest

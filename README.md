@@ -9,7 +9,7 @@ A workflow management system for auto repair shops — connects **Customers**, *
 - **App:** https://motoflow-services.vercel.app
 - **API docs:** https://motoflow.onrender.com/docs
 
-**Customer:** click *Register* and create your own account.
+**Customer:** log in with `customer@motoflow.dev` / `demo-password-2026`, or click *Register* to create your own account.
 
 **Mechanic:** log in with `mechanic@motoflow.dev` / `FzytUcOnRr6ikYsnq4vi9g`
 
@@ -93,6 +93,7 @@ uv sync
 cp .env.example .env   # fill in SECRET_KEY, DATABASE_URL, CORS_ORIGINS and the SEED_* credentials
 uv run alembic upgrade head
 uv run python admin_mech_seed.py       # creates the admin + mechanic accounts from the SEED_* values
+DEMO_CUSTOMER_PASSWORD=choose-one uv run python demo_seed.py   # optional: sample customers, vehicles and requests
 uv run fastapi dev app/main.py
 ```
 

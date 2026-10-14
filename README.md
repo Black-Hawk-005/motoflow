@@ -1,5 +1,7 @@
 # MotoFlow
 
+[![CI](https://github.com/Black-Hawk-005/motoflow/actions/workflows/ci.yml/badge.svg)](https://github.com/Black-Hawk-005/motoflow/actions/workflows/ci.yml)
+
 A workflow management system for auto repair shops — connects **Customers**, **Mechanics**, and **Admins** on one platform, from booking a service request through cost approval to completion.
 
 ## Live demo

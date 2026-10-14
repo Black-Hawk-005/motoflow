@@ -2,6 +2,17 @@
 
 A workflow management system for auto repair shops — connects **Customers**, **Mechanics**, and **Admins** on one platform, from booking a service request through cost approval to completion.
 
+## Live demo
+
+- **App:** https://motoflow-services.vercel.app
+- **API docs:** https://motoflow.onrender.com/docs
+
+**Customer:** click *Register* and create your own account.
+
+**Mechanic:** log in with `mechanic@motoflow.dev` / `FzytUcOnRr6ikYsnq4vi9g`
+
+> The backend runs on free hosting, so the first request after a quiet period can take up to a minute. After that it's fast.
+
 ## Why
 
 Most small repair shops track jobs through phone calls, paper tickets, or a group chat — there's no single source of truth for "what's the status of my car," "which mechanic is on this job," or "did the customer actually approve this cost.". MotoFlow has brought the service lifecyle as a state machine so user's know the truth with a digital evidence.
@@ -61,6 +72,10 @@ PENDING → ASSIGNED → IN_PROGRESS → ACTION_REQUIRED → APPROVED → COMPLE
 
 **Frontend** — React + TypeScript, TanStack Query for server-state caching and cache invalidation, React Router, Tailwind CSS.
 
+**Testing** — pytest suite (200+ tests) covering auth, role/ownership checks, and the service request state machine, run against a separate Postgres test database.
+
+**Deployment** — frontend on Vercel, backend on Render (Docker image), database on Supabase Postgres. A scheduled GitHub Actions job pings `/health` every 10 minutes to keep the free-tier services awake.
+
 ## Few decisions made for better design and performance
 
 - **Ownership checks return 404, not 403** — a user(mechanic/customer) trying to access request id not associated to then gets "not found," not "forbidden," so the API never confirms a resource exists to someone who shouldn't see it.
@@ -73,9 +88,9 @@ PENDING → ASSIGNED → IN_PROGRESS → ACTION_REQUIRED → APPROVED → COMPLE
 
 ```bash
 uv sync
-cp .env.example .env   # fill in SECRET_KEY and DATABASE_URL
+cp .env.example .env   # fill in SECRET_KEY, DATABASE_URL, CORS_ORIGINS and the SEED_* credentials
 uv run alembic upgrade head
-uv run python admin_mech_seed.py       # creates a default admin + mechanic account
+uv run python admin_mech_seed.py       # creates the admin + mechanic accounts from the SEED_* values
 uv run fastapi dev app/main.py
 ```
 
@@ -86,9 +101,10 @@ API docs (Swagger UI) available at `http://localhost:8000/docs` once running.
 ```bash
 cd frontend
 npm install
+echo "VITE_API_URL=http://localhost:8000" > .env.local
 npm run dev
 ```
 
 ## Status
 
-Actively developed. Customer, Mechanic, and Admin flows are all functional and styled. No automated test suite yet; not currently deployed (database is cloud-hosted via Supabase, backend/frontend run locally).
+Deployed and live (see *Live demo*). Customer, Mechanic, and Admin flows are all functional and styled, backed by an automated test suite.

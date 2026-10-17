@@ -49,7 +49,7 @@ app.include_router(service_line_items.router, prefix="/line-items", tags=["line-
 app.include_router(comments.router, prefix="/comments", tags=["comments"])
 
 
-@app.get("/health")
+@app.api_route("/health", methods=["GET", "HEAD"])
 async def health():
     async with engine.connect() as conn:
         await conn.execute(text("SELECT 1"))
